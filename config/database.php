@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -145,7 +145,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => 'campusbaseball_',
+            'prefix' => 'powerporch_',
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 
