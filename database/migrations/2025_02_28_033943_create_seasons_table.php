@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('type_id');
             $table->timestamp('start_date');
             $table->timestamp('end_date');
-            $table->json('refs')->nullable();
             $table->timestamps();
         });
     }

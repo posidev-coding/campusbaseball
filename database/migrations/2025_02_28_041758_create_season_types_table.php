@@ -22,7 +22,6 @@ return new class extends Migration
             $table->boolean('has_groups');
             $table->boolean('has_standings');
             $table->boolean('has_legs');
-            $table->json('refs')->nullable();
             $table->timestamps();
 
             $table->index(['season_id', 'type_id']);

@@ -13,17 +13,6 @@ class SyncSeasons implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
         $seasons = Http::get(config('espn.seasons'))->json()['items'];
@@ -46,11 +35,6 @@ class SyncSeasons implements ShouldQueue
                     'type_id' => $s['type']['id'],
                     'start_date' => $start_date,
                     'end_date' => $end_date,
-                    'refs' => [
-                        'self' => $s['$ref'],
-                        'type' => $s['type']['$ref'],
-                        'types' => $s['types']['$ref'],
-                    ],
                 ]
             );
 
@@ -77,11 +61,6 @@ class SyncSeasons implements ShouldQueue
                         'has_groups' =>  $sType['hasGroups'],
                         'has_standings' => $sType['hasStandings'],
                         'has_legs' => $sType['hasLegs'],
-                        'refs' => [
-                            'self' => $sType['$ref'],
-                            'groups' => $sType['groups']['$ref'],
-                            'weeks' => $sType['weeks']['$ref'],
-                        ],
                     ]
                 );
             }
@@ -104,11 +83,6 @@ class SyncSeasons implements ShouldQueue
                 'type_id' => $current['type']['id'],
                 'start_date' => $start_date,
                 'end_date' => $end_date,
-                'refs' => [
-                    'self' => $current['$ref'],
-                    'type' => $current['type']['$ref'],
-                    'types' => $current['types']['$ref'],
-                ],
             ]
         );
     }
