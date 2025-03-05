@@ -3,12 +3,12 @@
 namespace App\Jobs\Feeds;
 
 use App\Models\Team;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Bus\Batchable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class SyncTeam implements ShouldQueue
 {
@@ -18,9 +18,9 @@ class SyncTeam implements ShouldQueue
 
     private $url;
 
-    public function __construct(String $req)
+    public function __construct(string $req)
     {
-        $this->url = Str::isUrl($req) ? $req : config('espn.teams') . '/' . $req;
+        $this->url = Str::isUrl($req) ? $req : config('espn.teams').'/'.$req;
     }
 
     public function middleware(): array
@@ -35,7 +35,7 @@ class SyncTeam implements ShouldQueue
 
         $model = Team::updateOrCreate(
             [
-                'id' => $data['id']
+                'id' => $data['id'],
             ],
             [
                 'id' => $data['id'],

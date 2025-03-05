@@ -2,13 +2,10 @@
 
 namespace App\Jobs\Feeds;
 
-
-use Illuminate\Bus\Batch;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SyncTeams implements ShouldQueue
 {
@@ -19,7 +16,7 @@ class SyncTeams implements ShouldQueue
     public function handle(): void
     {
 
-        $teams = Http::get(config('espn.teams') . '?limit=' . self::LIMIT)->json()['items'];
+        $teams = Http::get(config('espn.teams').'?limit='.self::LIMIT)->json()['items'];
 
         $jobs = [];
 

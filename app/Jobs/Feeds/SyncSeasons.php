@@ -58,7 +58,7 @@ class SyncSeasons implements ShouldQueue
                         'abbreviation' => $sType['abbreviation'],
                         'start_date' => $start_date,
                         'end_date' => $end_date,
-                        'has_groups' =>  $sType['hasGroups'],
+                        'has_groups' => $sType['hasGroups'],
                         'has_standings' => $sType['hasStandings'],
                         'has_legs' => $sType['hasLegs'],
                     ]

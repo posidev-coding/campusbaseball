@@ -13,6 +13,6 @@ return [
      * API Endpoints
      */
     'about' => $baseUrl,
-    'seasons' => $baseUrl . '/seasons',
-    'teams' => $baseUrl . '/teams',
+    'seasons' => $baseUrl.'/seasons',
+    'teams' => $baseUrl.'/teams',
 ];

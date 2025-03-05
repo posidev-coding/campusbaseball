@@ -4,11 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Team extends Model
+class Group extends Model
 {
     protected $guarded = [];
 
-    protected $casts = [
-        'logos' => 'array',
-    ];
+    protected $casts = [];
 }
