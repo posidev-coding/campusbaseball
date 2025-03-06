@@ -1,6 +1,7 @@
 <?php
 
 $baseUrl = 'http://sports.core.api.espn.com/v2/sports/baseball/leagues/college-baseball';
+$season = date('Y');
 
 return [
 
@@ -14,5 +15,8 @@ return [
      */
     'about' => $baseUrl,
     'seasons' => $baseUrl.'/seasons',
+    'season' => $baseUrl.'/seasons/'.$season,
     'teams' => $baseUrl.'/teams',
+    'groups' => $baseUrl.'/seasons/'.$season.'/types/2/groups',
+    'rankings' => $baseUrl.'/rankings',
 ];

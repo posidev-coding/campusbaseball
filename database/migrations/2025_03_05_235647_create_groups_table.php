@@ -12,8 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('groups', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedSmallInteger('id')->primary();
+            $table->string('name')->nullable();
+            $table->string('abbreviation')->nullable();
+            $table->string('short_name')->nullable();
+            $table->string('midsize_name')->nullable();
+            $table->boolean('is_conference')->default(false);
+            $table->unsignedSmallInteger('parent_id')->nullable();
             $table->timestamps();
+
+            $table->index('parent_id');
         });
     }
 

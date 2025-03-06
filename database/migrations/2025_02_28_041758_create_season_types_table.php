@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('has_legs');
             $table->timestamps();
 
-            $table->index(['season_id', 'type_id']);
+            $table->unique(['season_id', 'type_id']);
         });
     }
 
