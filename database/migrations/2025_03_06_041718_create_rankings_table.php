@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rankings', function (Blueprint $table) {
-            $table->unsignedMediumInteger('poll_id');
             $table->unsignedSmallInteger('season_id');
             $table->unsignedSmallInteger('season_type_id');
             $table->unsignedMediumInteger('team_id');
@@ -24,7 +23,7 @@ return new class extends Migration
             $table->string('trend')->nullable();
             $table->timestamps();
 
-            $table->primary(['poll_id', 'season_id', 'season_type_id', 'team_id', 'week_nbr']);
+            $table->primary(['season_id', 'season_type_id', 'team_id', 'week_nbr']);
         });
     }
 

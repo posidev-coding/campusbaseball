@@ -40,7 +40,6 @@ class SyncRanking implements ShouldQueue
 
             $ranking = Ranking::firstOrNew(
                 [
-                    'poll_id' => $poll['id'],
                     'season_id' => $poll['season']['year'],
                     'season_type_id' => $poll['season']['type']['id'],
                     'week_nbr' => $poll['occurrence']['number'],

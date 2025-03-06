@@ -14,12 +14,15 @@ class SyncRankings implements ShouldQueue
     public function handle(): void
     {
 
-        $rankings = Http::get(config('espn.rankings'))->json()['items'];
+        // $rankings = Http::get(config('espn.rankings'))->json()['items'];
+        $d1 = '/rankings/10543'; // D1Baseball.com rankings
+        $base = config('espn.season') . '/types/2/weeks/'; // regular season
 
         $jobs = [];
 
-        foreach ($rankings as $ranking) {
-            array_push($jobs, new SyncRanking($ranking['$ref']));
+        for ($week = 1; $week <= 20; $week++) {
+            $url = $base . $week . $d1;
+            array_push($jobs, new SyncRanking($url));
         }
 
         $batch = Bus::batch($jobs)
