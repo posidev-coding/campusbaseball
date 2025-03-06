@@ -38,7 +38,6 @@ class SyncTeam implements ShouldQueue
                 'id' => $data['id'],
             ],
             [
-                'id' => $data['id'],
                 'slug' => $data['slug'] ?? null,
                 'location' => $data['location'] ?? null,
                 'name' => $data['name'] ?? null,
