@@ -14,6 +14,7 @@ return [
      * API Endpoints
      */
     'base' => $baseUrl,
+    'calendar' => $baseUrl.'/calendar',
     'seasons' => $baseUrl.'/seasons',
     'season' => $baseUrl.'/seasons/'.$season,
     'teams' => $baseUrl.'/teams',
