@@ -16,12 +16,12 @@ class SyncRankings implements ShouldQueue
 
         // $rankings = Http::get(config('espn.rankings'))->json()['items'];
         $d1 = '/rankings/10543'; // D1Baseball.com rankings
-        $base = config('espn.season') . '/types/2/weeks/'; // regular season
+        $base = config('espn.season').'/types/2/weeks/'; // regular season
 
         $jobs = [];
 
         for ($week = 1; $week <= 20; $week++) {
-            $url = $base . $week . $d1;
+            $url = $base.$week.$d1;
             array_push($jobs, new SyncRanking($url));
         }
 

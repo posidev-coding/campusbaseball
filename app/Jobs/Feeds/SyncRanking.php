@@ -32,7 +32,7 @@ class SyncRanking implements ShouldQueue
 
         $poll = Http::get($this->url)->json();
 
-        $ranks = $poll['ranks'];
+        $ranks = $poll['ranks'] ?? [];
 
         foreach ($ranks as $rank) {
 
