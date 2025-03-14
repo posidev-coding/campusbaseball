@@ -26,8 +26,6 @@ class SyncCalendar implements ShouldQueue
 
             $season_id = Http::get($cal['season']['$ref'])->json()['year'];
 
-            // dd($season_id);
-
             $calType = $cal['eventDate']['type'];
 
             foreach ($cal['eventDate']['dates'] as $calDate) {
@@ -48,6 +46,10 @@ class SyncCalendar implements ShouldQueue
                 );
 
                 $model->save();
+
+                if ($calType == 'ondays') {
+                    SyncGames::dispatch($dt);
+                }
             }
         }
     }

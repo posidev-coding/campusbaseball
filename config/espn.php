@@ -1,14 +1,14 @@
 <?php
 
 $baseUrl = 'http://sports.core.api.espn.com/v2/sports/baseball/leagues/college-baseball';
-$season = date('Y');
+$season = env('SEASON', date('Y'));
 
 return [
 
     /**
      * Current Season
      */
-    // 'season' => env('SEASON', 2024),
+    'year' => $season,
 
     /**
      * API Endpoints
@@ -20,4 +20,5 @@ return [
     'teams' => $baseUrl.'/teams',
     'groups' => $baseUrl.'/seasons/'.$season.'/types/2/groups',
     'rankings' => $baseUrl.'/rankings',
+    'games' => $baseUrl.'/events',
 ];
