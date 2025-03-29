@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('records', function (Blueprint $table) {
+            $table->id();
             $table->unsignedMediumInteger('team_id');
             $table->enum('scope', ['overall', 'home', 'away']);
             $table->string('summary');

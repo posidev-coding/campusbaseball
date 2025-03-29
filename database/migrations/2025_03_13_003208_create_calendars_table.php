@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('calendar', function (Blueprint $table) {
+            $table->id();
             $table->unsignedSmallInteger('season_id');
             $table->string('calendar_type');
             $table->date('calendar_date');
             $table->timestamps();
 
-            $table->primary(['season_id', 'calendar_type', 'calendar_date']);
+            $table->unique(['season_id', 'calendar_type', 'calendar_date']);
         });
     }
 

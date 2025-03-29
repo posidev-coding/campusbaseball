@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('season_types', function (Blueprint $table) {
+            $table->id();
             $table->unsignedSmallInteger('season_id');
             $table->unsignedSmallInteger('type_id');
             $table->string('name', 20);

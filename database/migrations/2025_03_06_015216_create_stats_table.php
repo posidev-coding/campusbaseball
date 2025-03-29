@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('stats', function (Blueprint $table) {
+            $table->id();
             $table->unsignedMediumInteger('team_id');
             $table->enum('scope', ['overall', 'home', 'away']);
             $table->string('name');
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->string('display_value');
             $table->timestamps();
 
-            $table->primary(['team_id', 'scope', 'name']);
+            $table->unique(['team_id', 'scope', 'name']);
         });
     }
 
