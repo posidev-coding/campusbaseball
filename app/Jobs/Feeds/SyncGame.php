@@ -12,7 +12,7 @@ class SyncGame implements ShouldQueue
 {
     use Batchable, Queueable;
 
-    public $tries = 1;
+    public $tries = 3;
 
     private $game;
 

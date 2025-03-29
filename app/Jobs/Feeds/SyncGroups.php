@@ -25,8 +25,7 @@ class SyncGroups implements ShouldQueue
         }
 
         $batch = Bus::batch($jobs)
-            ->name('Groups')
-            ->allowFailures()
+            ->name('Conferences')
             ->dispatch();
     }
 }

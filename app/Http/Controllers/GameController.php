@@ -9,289 +9,306 @@ use Illuminate\Support\Str;
 
 class GameController extends Controller
 {
+    public static function sync(int $gameId, string $mode = 'default'): Game
+    {
 
-  public static function sync(int $gameId, string $mode = 'full'): Game
-  {
+        $data = Http::get(config('espn.games').'/'.$gameId)->json();
 
-    $data = Http::get(config('espn.games') . '/' . $gameId)->json();
+        // Instantiate a working model
+        $game = self::game($gameId, $data); // 0 callouts
+        $game = self::status($game, $data);
+        $game = self::scores($game, $data);
 
-    // Obtain a game model
-    if ($mode == 'full') {
-      $game = self::game($gameId, $data);
-    } else {
-      $game = Game::findOr($gameId, function () use ($gameId, $data) {
-        return self::game($gameId, $data);
-      });
-    }
-
-    // $game->wasRecentlyCreated will be helpful here
-
-    // conditionally GET game components
-    $game = self::status($game, $data);
-    $game = self::scores($game, $data);
-    $game = self::boxes($game, $data);
-    $game = self::broadcasts($game, $data);
-    $game = self::rosters($game, $data);
-    $game = self::stats($game, $data); // sooo many API calls
-
-    $game->save();
-
-    return $game;
-  }
-
-  public static function game(int $gameId, mixed $data): Game
-  {
-
-    $seasons = config('espn.seasons') . '/';
-
-    $season = Str::of(Str::chopStart($data['season']['$ref'], $seasons))->take(4);
-
-    $season_type = Str::of(Str::chopStart($data['seasonType']['$ref'], $seasons . $season . '/types/'))->take(1);
-
-    $comp = $data['competitions'][0];
-
-    $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
-    $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
-
-    $venue = $comp['venue'] ?? null;
-    if ($venue) {
-      unset($venue['$ref']);
-    }
-
-    $away_records = isset($away_team['record']) ? self::records($away_team['record']['$ref'] . '&limit=100') : [];
-    $home_records = isset($home_team['record']) ? self::records($home_team['record']['$ref'] . '&limit=100') : [];
-
-    return Game::updateOrCreate(
-      [
-        'id' => $gameId,
-      ],
-      [
-        'game_date' => Carbon::parse($data['date']),
-        'name' => $data['name'] ?? null,
-        'short_name' => $data['shortName'] ?? null,
-        'season_id' => $season,
-        'season_type_id' => $season_type,
-        'away_id' => $away_team['id'],
-        'away_rank' => $away_team['curatedRank']['current'] ?? 0,
-        'away_winner' => $away_team['winner'] ?? 0,
-        'away_records' => $away_records,
-        'home_id' => $home_team['id'],
-        'home_rank' => $home_team['curatedRank']['current'] ?? 0,
-        'home_winner' => $home_team['winner'] ?? 0,
-        'home_records' => $home_records,
-        'venue' => $venue ?? null,
-      ]
-    );
-  }
-
-  public static function status(Game $game, mixed $data): Game
-  {
-
-    $comp = $data['competitions'][0];
-
-    // GET #2
-    $status = Http::get($comp['status']['$ref'])->json();
-    unset($status['$ref']);
-
-    $game->status_id = $status['type']['id'];
-    $game->status = $status;
-
-    return $game;
-  }
-
-  public static function scores(Game $game, mixed $data): Game
-  {
-    $comp = $data['competitions'][0];
-
-    $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
-    $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
-
-    // GET #3
-    $away_score = Http::get($away_team['score']['$ref'])->json();
-    // GET #4
-    $home_score = Http::get($home_team['score']['$ref'])->json();
-
-    $game->away_runs = $away_score['value'] ?? 0;
-    $game->away_hits = $away_score['hits'] ?? 0;
-    $game->away_errors = $away_score['errors'] ?? 0;
-    $game->away_winner = $away_team['winner'] ?? 0;
-
-    $game->home_runs = $home_score['value'] ?? 0;
-    $game->home_hits = $home_score['hits'] ?? 0;
-    $game->home_errors = $home_score['errors'] ?? 0;
-    $game->home_winner = $home_team['winner'] ?? 0;
-
-    return $game;
-  }
-
-  public static function broadcasts(Game $game, mixed $data): Game
-  {
-
-    $comp = $data['competitions'][0];
-    // GET #5
-    $broadcasts = Http::get($comp['broadcasts']['$ref'])->json()['items'];
-    $game->broadcasts = $broadcasts;
-
-    return $game;
-  }
-
-  public static function boxes(Game $game, mixed $data): Game
-  {
-
-    $comp = $data['competitions'][0];
-
-    $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
-    $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
-
-    $game->away_box = isset($away_team['linescores']) ? self::box($away_team['linescores']['$ref'] . '&limit=100') : [];
-    $game->home_box = isset($home_team['linescores']) ? self::box($home_team['linescores']['$ref'] . '&limit=100') : [];
-
-    return $game;
-  }
-
-  public static function box(string $ref): array
-  {
-
-    // GET #6 & 7
-    $box = Http::get($ref)->json()['items'];
-
-    foreach ($box as $i => $items) {
-
-      $box[$i]['inning'] = $box[$i]['period'];
-      $box[$i]['runs'] = $box[$i]['value'];
-
-      unset($box[$i]['$ref']);
-      unset($box[$i]['source']);
-      unset($box[$i]['value']);
-      unset($box[$i]['displayValue']);
-      unset($box[$i]['period']);
-    }
-
-    return $box;
-  }
-
-  public static function records(string $ref): array
-  {
-
-    // GET #8 & 9
-    $records = Http::get($ref)->json()['items'];
-
-    foreach ($records as $i => $record) {
-
-      unset($records[$i]['$ref']);
-      unset($records[$i]['id']);
-      unset($records[$i]['value']);
-      unset($records[$i]['displayValue']);
-      unset($records[$i]['stats']);
-    }
-
-    return $records;
-  }
-
-  public static function rosters(Game $game, mixed $data): Game
-  {
-
-    $comp = $data['competitions'][0];
-
-    $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
-    $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
-
-    $game->away_roster = isset($away_team['roster']) ? self::teamRoster($away_team['roster']['$ref']) : [];
-    $game->home_roster = isset($home_team['roster']) ? self::teamRoster($home_team['roster']['$ref']) : [];
-
-    return $game;
-  }
-
-  public static function teamRoster(string $ref): array
-  {
-
-    $data = [];
-
-    // GET #10 & 11
-    $roster = Http::get($ref)->json();
-
-    foreach ($roster['entries'] as $i => $player) {
-
-      $athlete = [
-        'id' => $player['playerId'],
-        'starter' => $player['starter'],
-        'batOrder' => $player['batOrder'],
-        'position' => Http::get($player['position']['$ref'])->json()['abbreviation'],
-        'subbedIn' => $player['subbedIn']['didSub'],
-        'subbedOut' => $player['subbedOut']['didSub'],
-        'batOrder' => $player['batOrder'],
-        'stats' => [],
-      ];
-
-      // cant do this
-      $cats = Http::get($player['statistics']['$ref'])->json()['splits']['categories'];
-
-      foreach ($cats as $cat) {
-
-        $category = $cat['name'];
-
-        $stats = [];
-
-        foreach ($cat['stats'] as $stat) {
-          array_push($stats, [
-            'key' => $stat['name'],
-            'name' => $stat['displayName'],
-            'abbr' => $stat['abbreviation'],
-            'value' => $stat['value'] ?? null,
-          ]);
+        if ($mode != 'default') {
+            $game = self::stats($game, $data);
+            $game = self::boxes($game, $data);
         }
 
-        $athlete['stats'][$category] = $stats;
-        // array_push($athlete['stats'][$category], $stats);
-      }
+        if ($mode == 'full') {
+            $game = self::records($game, $data);
+            $game = self::broadcasts($game, $data);
+            // $game = self::rosters($game, $data); // offload to job
+        }
 
-      array_push($data, $athlete);
+        return self::store($game);
     }
 
-    return $data;
-  }
+    public static function store($game)
+    {
+        $model = Game::find($game->id);
 
-  public static function stats(Game $game, mixed $data): Game
-  {
+        if ($model) {
+            $model->fill($game->toArray());
+            $model->save();
+        } else {
+            $model = Game::create($game->toArray());
+        }
 
-    $comp = $data['competitions'][0];
+        return $model;
+    }
 
-    $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
-    $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
+    public static function game(int $gameId, mixed $data): Game
+    {
 
-    $game->away_stats = isset($away_team['statistics']) ? self::teamStats($away_team['statistics']['$ref']) : [];
-    $game->home_stats = isset($home_team['statistics']) ? self::teamStats($home_team['statistics']['$ref']) : [];
+        $seasons = config('espn.seasons').'/';
 
-    return $game;
-  }
+        $season = Str::of(Str::chopStart($data['season']['$ref'], $seasons))->take(4);
 
-  public static function teamStats(string $ref): array
-  {
+        $season_type = Str::of(Str::chopStart($data['seasonType']['$ref'], $seasons.$season.'/types/'))->take(1);
 
-    $data = [];
+        $comp = $data['competitions'][0];
 
-    $stats = Http::get($ref)->json()['splits']['categories'];
+        $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
+        $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
 
-    foreach ($stats as $i => $val) {
+        $venue = $comp['venue'] ?? null;
+        if ($venue) {
+            unset($venue['$ref']);
+        }
 
-      $category = $stats[$i]['name'];
-      $categoryData = [];
-
-      foreach ($stats[$i]['stats'] as $stat) {
-        array_push($categoryData, [
-          'key' => $stat['name'],
-          'name' => $stat['displayName'],
-          'abbr' => $stat['abbreviation'],
-          'value' => $stat['value'] ?? null,
+        $game = new Game([
+            'id' => $gameId,
+            'game_date' => Carbon::parse($data['date']),
+            'name' => $data['name'] ?? null,
+            'short_name' => $data['shortName'] ?? null,
+            'season_id' => $season,
+            'season_type_id' => $season_type,
+            'away_id' => $away_team['id'],
+            'away_rank' => $away_team['curatedRank']['current'] ?? 0,
+            'away_winner' => $away_team['winner'] ?? 0,
+            'home_id' => $home_team['id'],
+            'home_rank' => $home_team['curatedRank']['current'] ?? 0,
+            'home_winner' => $home_team['winner'] ?? 0,
+            'venue' => $venue ?? null,
         ]);
-      }
 
-      array_push($data, [
-        'category' => $category,
-        'stats' => $categoryData,
-      ]);
+        return $game;
     }
 
-    return $data;
-  }
+    public static function status(Game $game, mixed $data): Game
+    {
+
+        $comp = $data['competitions'][0];
+
+        // GET #2
+        $status = Http::get($comp['status']['$ref'])->json();
+        unset($status['$ref']);
+
+        $game->status_id = $status['type']['id'];
+        $game->status = $status;
+
+        return $game;
+    }
+
+    public static function scores(Game $game, mixed $data): Game
+    {
+        $comp = $data['competitions'][0];
+
+        $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
+        $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
+
+        // GET #3
+        $away_score = Http::get($away_team['score']['$ref'])->json();
+        // GET #4
+        $home_score = Http::get($home_team['score']['$ref'])->json();
+
+        $game->away_runs = $away_score['value'] ?? 0;
+        $game->away_hits = $away_score['hits'] ?? 0;
+        $game->away_errors = $away_score['errors'] ?? 0;
+        $game->away_winner = $away_team['winner'] ?? 0;
+
+        $game->home_runs = $home_score['value'] ?? 0;
+        $game->home_hits = $home_score['hits'] ?? 0;
+        $game->home_errors = $home_score['errors'] ?? 0;
+        $game->home_winner = $home_team['winner'] ?? 0;
+
+        return $game;
+    }
+
+    public static function broadcasts(Game $game, mixed $data): Game
+    {
+
+        $comp = $data['competitions'][0];
+        // GET #5
+        $broadcasts = Http::get($comp['broadcasts']['$ref'])->json()['items'];
+        $game->broadcasts = $broadcasts;
+
+        return $game;
+    }
+
+    public static function boxes(Game $game, mixed $data): Game
+    {
+
+        $comp = $data['competitions'][0];
+
+        $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
+        $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
+
+        $game->away_box = isset($away_team['linescores']) ? self::box($away_team['linescores']['$ref'].'&limit=100') : [];
+        $game->home_box = isset($home_team['linescores']) ? self::box($home_team['linescores']['$ref'].'&limit=100') : [];
+
+        return $game;
+    }
+
+    public static function box(string $ref): array
+    {
+
+        // GET #6 & 7
+        $box = Http::get($ref)->json()['items'];
+
+        foreach ($box as $i => $items) {
+
+            $box[$i]['inning'] = $box[$i]['period'];
+            $box[$i]['runs'] = $box[$i]['value'];
+
+            unset($box[$i]['$ref']);
+            unset($box[$i]['source']);
+            unset($box[$i]['value']);
+            unset($box[$i]['displayValue']);
+            unset($box[$i]['period']);
+        }
+
+        return $box;
+    }
+
+    public static function records(Game $game, mixed $data): Game
+    {
+
+        $comp = $data['competitions'][0];
+
+        $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
+        $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
+
+        $game->away_records = isset($away_team['record']) ? self::teamRecords($away_team['record']['$ref'].'&limit=100') : [];
+        $game->home_records = isset($home_team['record']) ? self::teamRecords($home_team['record']['$ref'].'&limit=100') : [];
+
+        return $game;
+    }
+
+    public static function teamRecords(string $ref): array
+    {
+
+        // GET #8 & 9
+        $records = Http::get($ref)->json()['items'];
+
+        foreach ($records as $i => $record) {
+
+            unset($records[$i]['$ref']);
+            unset($records[$i]['id']);
+            unset($records[$i]['value']);
+            unset($records[$i]['displayValue']);
+            unset($records[$i]['stats']);
+        }
+
+        return $records;
+    }
+
+    public static function rosters(Game $game, mixed $data): Game
+    {
+
+        $comp = $data['competitions'][0];
+
+        $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
+        $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
+
+        dd($away_team['roster']['$ref']);
+
+        $game->away_roster = isset($away_team['roster']) ? self::teamRoster($away_team['roster']['$ref']) : [];
+        $game->home_roster = isset($home_team['roster']) ? self::teamRoster($home_team['roster']['$ref']) : [];
+
+        return $game;
+    }
+
+    public static function teamRoster(string $ref): array
+    {
+
+        $data = [];
+
+        // GET #10 & 11
+        $roster = Http::get($ref)->json();
+
+        foreach ($roster['entries'] as $i => $player) {
+
+            $athlete = [
+                'id' => $player['playerId'],
+                'starter' => $player['starter'],
+                'batOrder' => $player['batOrder'],
+                'position' => Http::get($player['position']['$ref'])->json()['abbreviation'],
+                'subbedIn' => $player['subbedIn']['didSub'],
+                'subbedOut' => $player['subbedOut']['didSub'],
+                'batOrder' => $player['batOrder'],
+                'stats' => [],
+            ];
+
+            // cant do this
+            $cats = Http::get($player['statistics']['$ref'])->json()['splits']['categories'];
+
+            foreach ($cats as $cat) {
+
+                $category = $cat['name'];
+
+                $stats = [];
+
+                foreach ($cat['stats'] as $stat) {
+                    array_push($stats, [
+                        'key' => $stat['name'],
+                        'name' => $stat['displayName'],
+                        'abbr' => $stat['abbreviation'],
+                        'value' => $stat['value'] ?? null,
+                    ]);
+                }
+
+                $athlete['stats'][$category] = $stats;
+                // array_push($athlete['stats'][$category], $stats);
+            }
+
+            array_push($data, $athlete);
+        }
+
+        return $data;
+    }
+
+    public static function stats(Game $game, mixed $data): Game
+    {
+
+        $comp = $data['competitions'][0];
+
+        $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
+        $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
+
+        $game->away_stats = isset($away_team['statistics']) ? self::teamStats($away_team['statistics']['$ref']) : [];
+        $game->home_stats = isset($home_team['statistics']) ? self::teamStats($home_team['statistics']['$ref']) : [];
+
+        return $game;
+    }
+
+    public static function teamStats(string $ref): array
+    {
+
+        $data = [];
+
+        $stats = Http::get($ref)->json()['splits']['categories'];
+
+        foreach ($stats as $i => $val) {
+
+            $category = $stats[$i]['name'];
+            $categoryData = [];
+
+            foreach ($stats[$i]['stats'] as $stat) {
+                array_push($categoryData, [
+                    'key' => $stat['name'],
+                    'name' => $stat['displayName'],
+                    'abbr' => $stat['abbreviation'],
+                    'value' => $stat['value'] ?? null,
+                ]);
+            }
+
+            array_push($data, [
+                'category' => $category,
+                'stats' => $categoryData,
+            ]);
+        }
+
+        return $data;
+    }
 }

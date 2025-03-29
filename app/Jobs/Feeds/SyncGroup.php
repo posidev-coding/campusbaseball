@@ -68,7 +68,7 @@ class SyncGroup implements ShouldQueue
                 $this->batch()->add($jobs);
             } else {
                 $batch = Bus::batch($jobs)
-                    ->name('Groups')
+                    ->name('Conferences')
                     ->allowFailures()
                     ->dispatch();
             }

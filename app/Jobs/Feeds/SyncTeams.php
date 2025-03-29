@@ -26,7 +26,6 @@ class SyncTeams implements ShouldQueue
 
         $batch = Bus::batch($jobs)
             ->name('Teams')
-            ->allowFailures()
             ->dispatch();
     }
 }

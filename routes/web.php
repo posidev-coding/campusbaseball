@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Conferences;
+use App\Livewire\Feeds\Feeds;
 use App\Livewire\Rankings;
 use App\Livewire\Scores;
 use App\Livewire\Teams;
@@ -19,6 +20,9 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+
+    // Feeds
+    Route::get('/feeds', Feeds::class)->name('feeds');
 });
 
 require __DIR__.'/auth.php';

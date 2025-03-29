@@ -38,7 +38,7 @@ class SyncRanking implements ShouldQueue
 
             $team_id = Http::get($rank['team']['$ref'])->json()['id'];
 
-            $ranking = Ranking::firstOrNew(
+            $ranking = Ranking::updateOrCreate(
                 [
                     'season_id' => $poll['season']['year'],
                     'season_type_id' => $poll['season']['type']['id'],
@@ -53,8 +53,6 @@ class SyncRanking implements ShouldQueue
                     'trend' => $rank['trend'] ?? null,
                 ]
             );
-
-            $ranking->save();
         }
     }
 }

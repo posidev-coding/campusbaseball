@@ -77,7 +77,7 @@ class SyncTeam implements ShouldQueue
                 $losses = intval($counts[1]);
                 $pct = round(($wins / ($wins + $losses)), 3);
 
-                $record = Record::firstOrNew(
+                $record = Record::updateOrCreate(
                     [
                         'team_id' => $this->team_id,
                         'scope' => $scope,
@@ -90,13 +90,11 @@ class SyncTeam implements ShouldQueue
                     ]
                 );
 
-                $record->save();
-
                 if (isset($item['stats'])) {
 
                     foreach ($item['stats'] as $stat) {
 
-                        $stat = Stat::firstOrNew(
+                        $stat = Stat::updateOrCreate(
                             [
                                 'team_id' => $this->team_id,
                                 'scope' => $scope,
@@ -111,8 +109,6 @@ class SyncTeam implements ShouldQueue
                                 'display_value' => $stat['displayValue'] ?? null,
                             ]
                         );
-
-                        $stat->save();
                     }
                 }
             }
