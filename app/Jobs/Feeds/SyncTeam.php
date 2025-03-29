@@ -39,11 +39,25 @@ class SyncTeam implements ShouldQueue
 
         $this->team_id = $data['id'];
 
+        $conf_id = 26;
+
+        if(isset($data['groups'])) {
+            $group = Http::get($data['groups']['$ref'])->json();
+
+            if(!$group['isConference'] && isset($group['parent'])) {
+                $parent = Http::get($group['parent']['$ref'])->json();
+                $conf_id = $parent['id'];
+            } else {
+                $conf_id = $group['id'];
+            }
+        }
+
         $team = Team::updateOrCreate(
             [
                 'id' => $this->team_id,
             ],
             [
+                'conference_id' => $conf_id,
                 'slug' => $data['slug'] ?? null,
                 'location' => $data['location'] ?? null,
                 'name' => $data['name'] ?? null,

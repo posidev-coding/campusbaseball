@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('teams', function (Blueprint $table) {
             $table->unsignedMediumInteger('id')->primary();
+            $table->unsignedTinyInteger('conference_id')->nullable();
             $table->string('slug')->nullable();
             $table->string('location')->nullable();
             $table->string('name')->nullable();
