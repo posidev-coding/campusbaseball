@@ -3,6 +3,7 @@
 namespace App\Jobs\Feeds;
 
 use App\Models\Ranking;
+use App\Models\Team;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -38,6 +39,10 @@ class SyncRanking implements ShouldQueue
 
             $team_id = Http::get($rank['team']['$ref'])->json()['id'];
 
+            if ($team_id == 514) {
+                $team_id = 263;
+            }
+
             $ranking = Ranking::updateOrCreate(
                 [
                     'season_id' => $poll['season']['year'],
@@ -53,6 +58,11 @@ class SyncRanking implements ShouldQueue
                     'trend' => $rank['trend'] ?? null,
                 ]
             );
+
+            $team = Team::findOr($team_id, function () use ($team_id) {
+                SyncTeam::dispatch($team_id);
+            });
+
         }
     }
 }

@@ -21,4 +21,5 @@ return [
     'groups' => $baseUrl.'/seasons/'.$season.'/types/2/groups',
     'rankings' => $baseUrl.'/rankings',
     'games' => $baseUrl.'/events',
+
 ];

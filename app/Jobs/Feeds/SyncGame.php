@@ -29,6 +29,6 @@ class SyncGame implements ShouldQueue
     public function handle(): void
     {
 
-        GameController::sync($this->game);
+        GameController::sync($this->game, 'full');
     }
 }

@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
-            $table->datetime('game_date');
+            $table->date('game_date');
+            $table->datetime('game_time');
             $table->string('name');
             $table->string('short_name');
 

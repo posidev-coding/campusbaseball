@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\Feeds\SyncTeam;
 use App\Models\Game;
+use App\Models\Team;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -27,6 +29,15 @@ class GameController extends Controller
         if ($mode == 'full') {
             $game = self::records($game, $data);
             $game = self::broadcasts($game, $data);
+
+            $away = Team::findOr($game->away_id, function () use ($game) {
+                SyncTeam::dispatch($game->away_id);
+            });
+
+            $home = Team::findOr($game->home_id, function () use ($game) {
+                SyncTeam::dispatch($game->home_id);
+            });
+
             // $game = self::rosters($game, $data); // offload to job
         }
 
@@ -68,7 +79,8 @@ class GameController extends Controller
 
         $game = new Game([
             'id' => $gameId,
-            'game_date' => Carbon::parse($data['date']),
+            'game_date' => Carbon::parse($data['date'])->setTimezone('America/New_York')->toDateString(),
+            'game_time' => Carbon::parse($data['date']),
             'name' => $data['name'] ?? null,
             'short_name' => $data['shortName'] ?? null,
             'season_id' => $season,

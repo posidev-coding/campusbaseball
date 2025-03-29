@@ -3,8 +3,8 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky stashable class="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <body class="min-h-screen bg-slate-50 dark:bg-slate-800">
+        <flux:sidebar sticky stashable class="border-r border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('home') }}" class="mr-5 flex items-center space-x-2" wire:navigate>
@@ -76,7 +76,7 @@
         </flux:sidebar>
 
         <!-- Desktop Header -->
-        <flux:header class="bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 hidden lg:block">
+        <flux:header class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 hidden lg:block">
             
             <flux:navbar>
 
@@ -141,7 +141,7 @@
         </flux:header>
 
         <!-- Mobile User Menu -->
-        <flux:header class="lg:hidden bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
+        <flux:header class="lg:hidden bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
         
             <flux:spacer />

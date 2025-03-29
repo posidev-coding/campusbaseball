@@ -64,15 +64,15 @@
                     <flux:table.cell>{{ $batch->name }}</flux:table.cell>
 
                     <flux:table.cell>
-                        <flux:badge size="sm" color="zinc">{{ $batch->total_jobs }}</flux:badge>
+                        <flux:badge size="sm" color="slate">{{ $batch->total_jobs }}</flux:badge>
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        <flux:badge size="sm" color="zinc">{{ $batch->pending_jobs }}</flux:badge>
+                        <flux:badge size="sm" color="slate">{{ $batch->pending_jobs }}</flux:badge>
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        <flux:badge size="sm" color="zinc">{{ $batch->failed_jobs }}</flux:badge>
+                        <flux:badge size="sm" color="slate">{{ $batch->failed_jobs }}</flux:badge>
                     </flux:table.cell>
 
                     @if ($batch->finished_at && $batch->failed_jobs > 0)
@@ -101,7 +101,8 @@
 
                     @if (!$batch->cancelled_at && !$batch->finished_at)
                         <flux:table.cell>
-                            <flux:button size="xs" icon="loading" tooltip="Cancel batch" wire:click="cancel('{{ $batch->id }}')" class="cursor-pointer">Cancel</flux:button>
+                            <flux:button size="xs" icon="loading" tooltip="Cancel batch"
+                                wire:click="cancel('{{ $batch->id }}')" class="cursor-pointer">Cancel</flux:button>
                         </flux:table.cell>
                     @else
                         <flux:table.cell>
