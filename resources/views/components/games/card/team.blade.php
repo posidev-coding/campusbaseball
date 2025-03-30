@@ -1,6 +1,8 @@
 <div class="flex items-center justify-between">
     <div class="flex items-center space-x-4">
-        <img src="{{ $team->logos[0]['href'] }}" class="h-8 w-8" />
+        @isset($team->logos[0])
+            <img src="{{ $team->logos[0]['href'] }}" class="h-8 w-8" />
+        @endisset
         <div class="flex flex-col">
             <div class="flex flex-row items-center">
                 @if ($rank)
@@ -12,7 +14,7 @@
                     'text-black',
                     'text-gray-400' => $game->status_id == 3 && !$winner,
                     'font-normal' => $game->status_id == 3 && !$winner,
-                ])>{{ $team->location }}</div>
+                ])>{{ $team->location ?? 'N/A' }}</div>
             </div>
             @if ($record)
                 <div class="text-gray-400 text-[10px] font-light">({{ $record }})</div>

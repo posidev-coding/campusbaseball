@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('color')->nullable();
             $table->json('logos')->nullable();
             $table->timestamps();
+            $table->index('conference_id');
         });
     }
 

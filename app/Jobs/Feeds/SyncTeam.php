@@ -39,24 +39,23 @@ class SyncTeam implements ShouldQueue
 
         $this->team_id = $data['id'];
 
-        $conf_id = 26;
+        $conf_id = null;
 
         if(isset($data['groups'])) {
             $group = Http::get($data['groups']['$ref'])->json();
 
             if(!$group['isConference'] && isset($group['parent'])) {
                 $parent = Http::get($group['parent']['$ref'])->json();
-                $conf_id = $parent['id'];
+
+                if($parent['isConference']) $conf_id = $parent['id'];
             } else {
                 $conf_id = $group['id'];
             }
         }
 
-        $team = Team::updateOrCreate(
-            [
+        $team = Team::findOr($this->team_id, function() use($data, $conf_id) {
+            return Team::create([
                 'id' => $this->team_id,
-            ],
-            [
                 'conference_id' => $conf_id,
                 'slug' => $data['slug'] ?? null,
                 'location' => $data['location'] ?? null,
@@ -67,8 +66,28 @@ class SyncTeam implements ShouldQueue
                 'short_display_name' => $data['shortDisplayName'] ?? null,
                 'color' => $data['color'] ?? null,
                 'logos' => $data['logos'] ?? null,
-            ]
-        );
+            ]);
+        });
+
+        if(!$team->wasRecentlyCreated) {
+            // Found model in database, update it
+            $team->slug = $data['slug'] ?? null;
+            $team->location = $data['location'] ?? null;
+            $team->name = $data['name'] ?? null;
+            $team->nickname = $data['nickname'] ?? null;
+            $team->abbreviation = $data['abbreviation'] ?? null;
+            $team->display_name = $data['displayName'] ?? null;
+            $team->short_display_name = $data['shortDisplayName'] ?? null;
+            $team->color = $data['color'] ?? null;
+            $team->logos = $data['logos'] ?? null;
+
+            // Dont overwrite the conference ID once it's been set
+            // Many teams need manual conference assignment because the ESPN API
+            // Doesn't specificy one
+            $team->conference_id = $team->conference_id ?? $conf_id;
+
+            $team->save();
+        }
 
         $this->records();
     }
