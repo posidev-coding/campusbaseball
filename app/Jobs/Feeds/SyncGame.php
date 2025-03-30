@@ -15,10 +15,12 @@ class SyncGame implements ShouldQueue
     public $tries = 3;
 
     private $game;
+    private $scope;
 
-    public function __construct(int $game)
+    public function __construct(int $game, $scope = 'live')
     {
         $this->game = $game;
+        $this->scope = $scope;
     }
 
     public function middleware(): array
@@ -28,7 +30,6 @@ class SyncGame implements ShouldQueue
 
     public function handle(): void
     {
-
-        GameController::sync($this->game, 'full');
+        GameController::sync($this->game, $this->scope);
     }
 }
