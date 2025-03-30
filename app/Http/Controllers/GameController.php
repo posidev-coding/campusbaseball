@@ -80,7 +80,7 @@ class GameController extends Controller
         $game = new Game([
             'id' => $gameId,
             'game_date' => Carbon::parse($data['date'])->setTimezone('America/New_York')->toDateString(),
-            'game_time' => Carbon::parse($data['date']),
+            'game_time' => Carbon::parse($data['date'])->setTimezone('America/New_York'),
             'name' => $data['name'] ?? null,
             'short_name' => $data['shortName'] ?? null,
             'season_id' => $season,

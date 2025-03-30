@@ -52,9 +52,9 @@
                 wire:click="sort('failed_jobs')">Failed</flux:table.column>
             <flux:table.column>Status</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'created_at'" :direction="$sortDirection"
-                wire:click="sort('created_at')">Created</flux:table.column>
+                wire:click="sort('created_at')">Start</flux:table.column>
             <flux:table.column sortable :sorted="$sortBy === 'finished_at'" :direction="$sortDirection"
-                wire:click="sort('finished_at')">Finished</flux:table.column>
+                wire:click="sort('finished_at')">Duration</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
@@ -96,7 +96,7 @@
                     @endif
 
                     <flux:table.cell>
-                        {{ \Carbon\Carbon::parse($batch->created_at)->setTimezone('America/New_York')->format('Y-m-d H:i:s') }}
+                        {{ \Carbon\Carbon::parse($batch->created_at)->setTimezone('America/New_York')->format('n/j g:i:s A') }}
                     </flux:table.cell>
 
                     @if (!$batch->cancelled_at && !$batch->finished_at)
@@ -106,7 +106,7 @@
                         </flux:table.cell>
                     @else
                         <flux:table.cell>
-                            {{ \Carbon\Carbon::parse($batch->cancelled_at ?? $batch->finished_at)->setTimezone('America/New_York')->format('Y-m-d H:i:s') }}
+                            {{ \Carbon\Carbon::parse($batch->cancelled_at ?? $batch->finished_at)->diff(\Carbon\Carbon::parse($batch->created_at)) }}
                         </flux:table.cell>
                     @endif
 
