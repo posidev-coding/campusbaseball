@@ -15,6 +15,7 @@ class SyncGame implements ShouldQueue
     public $tries = 3;
 
     private $game;
+
     private $scope;
 
     public function __construct(int $game, $scope = 'live')

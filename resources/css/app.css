@@ -64,3 +64,32 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+.BaseballBases {
+	-ms-flex-negative: 0;
+	flex-shrink: 0;
+	padding: 1px 0;
+    display: inline-block;
+    position: relative;
+}
+
+.BaseballBases__Wrapper {
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: reverse;
+	-ms-flex-direction: row-reverse;
+	flex-direction: row-reverse;
+}
+
+.diamond {
+	border-style: solid;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+	-webkit-transition: border-color .5s cubic-bezier(.62,.28,.23,.99);
+	transition: border-color .5s cubic-bezier(.62,.28,.23,.99);
+}
+
+.first-base, .third-base {
+	-ms-flex-item-align: end;
+	align-self: flex-end;
+}

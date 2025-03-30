@@ -49,7 +49,7 @@ class ViewGames extends Component
             ->orderBy('status_id', 'ASC')
             ->get();
 
-        return $live->union($other);
+        return $live->merge($other);
     }
 
     public function setDate($dt)
