@@ -145,7 +145,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => 'powerporch_',
+            'prefix' => 'cb_',
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 
