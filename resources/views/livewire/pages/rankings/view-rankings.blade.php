@@ -1,5 +1,5 @@
 <div>
-    <flux:header>Rankings</flux:header>
+    <flux:header size="sm">D1Baseball.com Poll</flux:header>
 
     <flux:table >
         <flux:table.columns>
@@ -19,6 +19,7 @@
                         <div class="flex items-center space-x-4">
                             <img src="{{ $rank->team->logos[0]['href'] }}" class="h-6 w-6" />
                             <div>{{ $rank->team->location }}</div>
+                        </div>
                     </flux:table.cell>
                     <flux:table.cell>{{ $rank->team->record->summary ?? 'n/a' }}</flux:table.cell>
                     <flux:table.cell>{{ $rank->previous }}</flux:table.cell>
