@@ -41,19 +41,21 @@ class SyncTeam implements ShouldQueue
 
         $conf_id = null;
 
-        if(isset($data['groups'])) {
+        if (isset($data['groups'])) {
             $group = Http::get($data['groups']['$ref'])->json();
 
-            if(!$group['isConference'] && isset($group['parent'])) {
+            if (! $group['isConference'] && isset($group['parent'])) {
                 $parent = Http::get($group['parent']['$ref'])->json();
 
-                if($parent['isConference']) $conf_id = $parent['id'];
+                if ($parent['isConference']) {
+                    $conf_id = $parent['id'];
+                }
             } else {
                 $conf_id = $group['id'];
             }
         }
 
-        $team = Team::findOr($this->team_id, function() use($data, $conf_id) {
+        $team = Team::findOr($this->team_id, function () use ($data, $conf_id) {
             return Team::create([
                 'id' => $this->team_id,
                 'conference_id' => $conf_id,
@@ -69,7 +71,7 @@ class SyncTeam implements ShouldQueue
             ]);
         });
 
-        if(!$team->wasRecentlyCreated) {
+        if (! $team->wasRecentlyCreated) {
             // Found model in database, update it
             $team->slug = $data['slug'] ?? null;
             $team->location = $data['location'] ?? null;

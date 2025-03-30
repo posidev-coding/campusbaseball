@@ -35,7 +35,6 @@ class Team extends Model
     }
 
     public function getLiveAttribute()
-
     {
 
         return $this->liveHome ?? $this->liveAway;

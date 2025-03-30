@@ -8,8 +8,8 @@ use Livewire\Component;
 
 class ViewTeams extends Component
 {
-
     public $conference;
+
     public $conferences;
 
     public function mount()
@@ -31,11 +31,13 @@ class ViewTeams extends Component
     public function teams()
     {
 
-        $teams = Team::has('conference')->with('liveHome','liveAway');
+        $teams = Team::has('conference')->with('liveHome', 'liveAway');
 
         // dd($teams->get()[0]);
 
-        if($this->conference) $teams->where('conference_id', $this->conference);
+        if ($this->conference) {
+            $teams->where('conference_id', $this->conference);
+        }
 
         return $teams->orderBy('display_name')->get();
     }

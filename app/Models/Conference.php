@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class Conference extends Model
 {
     protected $table = 'groups';
+
     protected $guarded = [];
+
     protected $casts = [];
 
     public function teams()
@@ -26,5 +28,4 @@ class Conference extends Model
         });
 
     }
-
 }
