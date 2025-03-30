@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-slate-50 dark:bg-slate-800">
+    <body class="min-h-screen bg-white dark:bg-slate-800">
         <flux:sidebar sticky stashable class="border-r border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
@@ -15,9 +15,9 @@
 
                 {{-- <flux:navlist.item icon="home-plate" :href="route('home')" :current="request()->routeIs('home')" wire:navigate>{{ __('Home Plate') }}</flux:navlist.item> --}}
                 <flux:navlist.item icon="table-properties" :href="route('scores')" :current="request()->routeIs('scores')" wire:navigate>{{ __('Scores') }}</flux:navlist.item>
-                <flux:navlist.item icon="hashtag" :href="route('rankings')" :current="request()->routeIs('rankings')" wire:navigate>{{ __('Rankings') }}</flux:navlist.item>
                 <flux:navlist.item icon="flag" :href="route('teams')" :current="request()->routeIs('teams')" wire:navigate>{{ __('Teams') }}</flux:navlist.item>
-                <flux:navlist.item icon="rectangle-group" :href="route('conferences')" :current="request()->routeIs('conferences')" wire:navigate>{{ __('Conferences') }}</flux:navlist.item>
+                <flux:navlist.item icon="rectangle-group" :href="route('standings')" :current="request()->routeIs('standings')" wire:navigate>{{ __('Standings') }}</flux:navlist.item>
+                <flux:navlist.item icon="hashtag" :href="route('rankings')" :current="request()->routeIs('rankings')" wire:navigate>{{ __('Rankings') }}</flux:navlist.item>
 
                 <flux:navlist.group heading="Favorites" class="mt-4">
 
@@ -62,6 +62,7 @@
                 <flux:spacer />
 
                 <flux:navlist variant="outline">
+                    <flux:navlist.item icon="arrows-up-down" href="{{ route('feeds') }}">Feeds</flux:navlist.item>
                     <flux:navlist.item icon="cog-6-tooth" href="{{ route('settings.profile') }}">Settings</flux:navlist.item>
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
