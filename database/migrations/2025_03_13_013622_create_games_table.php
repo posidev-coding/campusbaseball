@@ -41,19 +41,22 @@ return new class extends Migration
             $table->unsignedTinyInteger('home_runs')->default(0);
             $table->unsignedTinyInteger('home_hits')->default(0);
             $table->unsignedTinyInteger('home_errors')->default(0);
-            $table->boolean('home_winner')->default(false);
+            $table->boolean('home_winner')->default(false);            
             $table->json('home_box')->nullable();
             $table->json('home_stats')->nullable();
             $table->json('home_records')->nullable();
             $table->json('home_roster')->nullable();
 
+            $table->unsignedBigInteger('play_page')->nullable()->default(1);
+            $table->unsignedBigInteger('play_cursor')->nullable();
+            $table->json('resources')->nullable();
             $table->json('status')->nullable();
             $table->json('venue')->nullable();
             $table->json('broadcasts')->nullable();
-
             $table->timestamps();
 
             $table->index('game_date');
+            $table->index('play_cursor');
             $table->index('season_id');
             $table->index('season_type_id');
             $table->index('away_id');

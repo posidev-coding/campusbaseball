@@ -1,13 +1,15 @@
 @php
 
     $inningsPlayed = count($this->game->away_box);
-    $boxes = $inningsPlayed > 9 ? $inningsPlayed : 9;
+    $boxes = $inningsPlayed > 0 ? ( $inningsPlayed > 9 ? $inningsPlayed : 9) : 0;
+
+    $maxWidth = $boxes > 0 ? 'max-w-5xl' : 'max-w-sm';
 
 @endphp
 
-<div class="flex justify-center">
+<div class="flex justify-center" wire:poll.10s="refresh">
 
-    <div class="border rounded-lg m-4 grow max-w-5xl">
+    <div class="border rounded-lg m-4 grow {{ $maxWidth }}">
 
         <div class="flex items-stretch w-full">
             <div class="flex flex-col">
@@ -37,34 +39,32 @@
             </div>
             <div class="flex grow">
                 <div class="grid grid-cols-{{ $boxes + 3 }} grow">
+
                     @for ($i = 0; $i < $boxes; $i++)
                         <div class="flex flex-col border-l text-sm font-light">
                             <div @class([
                                 'h-7 place-content-center text-center text-gray-500 bg-slate-100 border-b',
                                 'text-gray-900 font-semibold' =>
                                     !$this->game->completed && $i + 1 == $this->game->status['period'],
-                            ])>
-                                {{ $i + 1 }}</div>
+                            ])>{{ $i + 1 }}</div>
                             <div @class([
                                 'h-7 place-content-center text-center text-gray-700 border-b',
                                 'bg-blue-50' =>
                                     !$this->game->completed &&
                                     $i + 1 == $this->game->status['period'] &&
                                     $this->game->status['periodPrefix'] == 'Top',
-                            ])>
-                                {{ $this->game->away_box[$i]['runs'] ?? '-' }}
-                            </div>
+                            ])>{{ $this->game->away_box[$i]['runs'] ?? '-' }}</div>
                             <div @class([
                                 'h-7 place-content-center text-center text-gray-700',
                                 'bg-blue-50' =>
                                     !$this->game->completed &&
                                     $i + 1 == $this->game->status['period'] &&
                                     $this->game->status['periodPrefix'] == 'Bottom',
-                            ])>
-                                {{ $this->game->home_box[$i]['runs'] ?? '-' }}
-                            </div>
+                            ])>{{ $this->game->home_box[$i]['runs'] ?? '-' }}</div>
                         </div>
+
                     @endfor
+
                     <div class="flex flex-col border-l font-semibold text-sm">
                         <div class="h-7 place-content-center text-center text-gray-500 bg-slate-100 border-b">R</div>
                         <div class="h-7 place-content-center text-center text-gray-700 border-b">
@@ -97,21 +97,23 @@
 
         </div>
 
-        @if(isset($this->situation['pitcher']))
+        
+        @if (isset($this->situation['pitcher']))
 
             @php
-                $pitcher = Http::get($this->situation['pitcher']['athlete']['$ref'])->json();
-                $pitcherStats = Http::get($this->situation['pitcher']['statistics']['$ref'])->json();
-                $batter = Http::get($this->situation['batter']['athlete']['$ref'])->json();
-                $batterStats = Http::get($this->situation['batter']['statistics']['$ref'])->json();
+                $pitcher = isset($this->situation['pitcher']['athlete']['$ref']) ? Http::get($this->situation['pitcher']['athlete']['$ref'])->json() : null;
+                $pitcherStats = isset($this->situation['pitcher']['statistics']['$ref']) ? Http::get($this->situation['pitcher']['statistics']['$ref'])->json() : null;
+                $batter = isset($this->situation['batter']['athlete']['$ref']) ? Http::get($this->situation['batter']['athlete']['$ref'])->json() : null;
+                $batterStats = isset($this->situation['batter']['statistics']['$ref']) ? Http::get($this->situation['batter']['statistics']['$ref'])->json() : null;
+                $lastPlay = isset($this->situation['lastPlay']['$ref']) ? Http::get($this->situation['lastPlay']['$ref'])->json() : null;
             @endphp
 
-            <div class="border-t p-2 flex items-center space-x-12">
+            <div class="border-t p-2 flex items-center justify-center space-x-12">
 
                 <!-- Pitcher -->
                 <div class="flex items-center space-x-4">
                     <div>
-                        @if($this->game->status['periodPrefix'] == 'Top')
+                        @if ($this->game->status['periodPrefix'] == 'Top')
                             <!-- Home team is pitching -->
                             <img src="{{ $this->game->home->logos[0]['href'] }}" class="h-10 w-10" />
                         @else
@@ -124,7 +126,7 @@
                         <div class="text-sm font-light tracking-wide">{{ $pitcher['shortName'] }}</div>
                         <div class="text-xs text-gray-400">
                             @foreach ($pitcherStats['splits']['categories'] as $stat)
-                                @if($stat['name'] == 'pitching')
+                                @if ($stat['name'] == 'pitching')
                                     {{ $stat['summary'] }}
                                 @endif
                             @endforeach
@@ -135,7 +137,7 @@
                 <!-- Batter -->
                 <div class="flex items-center space-x-4">
                     <div>
-                        @if($this->game->status['periodPrefix'] == 'Bottom')
+                        @if ($this->game->status['periodPrefix'] == 'Bottom')
                             <!-- Home team is batting -->
                             <img src="{{ $this->game->home->logos[0]['href'] }}" class="h-10 w-10" />
                         @else
@@ -148,7 +150,7 @@
                         <div class="text-sm font-light tracking-wide">{{ $batter['shortName'] }}</div>
                         <div class="text-xs text-gray-400">
                             @foreach ($batterStats['splits']['categories'] as $stat)
-                                @if($stat['name'] == 'batting')
+                                @if ($stat['name'] == 'batting')
                                     {{ $stat['summary'] }}
                                 @endif
                             @endforeach
@@ -156,6 +158,7 @@
                     </div>
                 </div>
 
+                <!-- Bases -->
                 @if ($game->status_id == 2 && isset($this->situation['outs']))
                 <div class="flex flex-col space-y-1 text-center">
                     <div class="BaseballBases">
@@ -180,6 +183,13 @@
                     </div>
                 </div>
                 @endif
+
+                <!-- Last Play -->
+                {{-- @if($lastPlay)
+                    <div>
+                        {{ $lastPlay['text'] }}
+                    </div>
+                @endif --}}
 
             </div>
 

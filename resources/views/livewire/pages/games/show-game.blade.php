@@ -59,42 +59,52 @@
             <!-- Status -->
             <div class="w-1/3 md:w-2/12 flex flex-col items-center space-y-0.5 text-xs tracking-tighter text-gray-500">
 
-                @if (!$game->completed && isset($game->broadcasts[0]['station']))
-                    <span>{{ $game->broadcasts[0]['station'] }}</span>
-                @endif
+                {{-- <flux:icon.loading wire:loading wire:target="refresh" class="size-4" /> --}}
 
-                <div class="font-semibold flex items-center">
-                    <div @class([
-                        'text-red-600' => $game->status_id == 2,
-                    ])>
-                        {{ $game->status['type']['shortDetail'] }}
-                    </div>
-                    @if ($game->status_id == 2 && isset($this->situation['outs']))
-                        <flux:icon.dot />
-                        <div class="text-black">
-                            {{ $this->situation['outs'] . ($this->situation['outs'] == 1 ? ' out' : ' outs') }}
-                        </div>
+                {{-- <div wire:loading.remove wire:target="refresh"> --}}
+                    @if (!$game->completed && isset($game->broadcasts[0]['station']))
+                        <span>{{ $game->broadcasts[0]['station'] }}</span>
                     @endif
-                </div>
 
-                @if ($game->status_id == 2 && isset($this->situation['outs']))
-                    <div class="BaseballBases">
-                        <div class="BaseballBases__Wrapper flex relative justify-center">
-                            <div @class([
-                                'diamond first-base border',
-                                'border-blue-600' => isset($this->situation['onFirst']),
-                            ]) style="border-width: 4px; margin-bottom: falsepx"></div>
-                            <div @class([
-                                'diamond second-base border',
-                                'border-blue-600' => isset($this->situation['onFirst']),
-                            ]) style="border-width: 4px; margin-bottom: 8px"></div>
-                            <div @class([
-                                'diamond third-base border',
-                                'border-blue-600' => isset($this->situation['onFirst']),
-                            ]) style="border-width: 4px; margin-bottom: falsepx"></div>
+                    <div class="font-semibold flex items-center">
+                        <div @class([
+                            'text-red-600' => $game->status_id == 2,
+                        ])>
+                            {{ $game->status['type']['shortDetail'] }}
                         </div>
+                        @if ($game->status_id == 2 && isset($this->situation['outs']))
+                            <flux:icon.dot />
+                            <div class="text-black">
+                                {{ $this->situation['outs'] . ($this->situation['outs'] == 1 ? ' out' : ' outs') }}
+                            </div>
+                        @endif
                     </div>
-                @endif
+
+                    @if ($game->status_id == 2 && isset($this->situation['outs']))
+
+                        <flux:icon.loading wire:loading wire:target="situation" class="size-4" />
+
+                        <div wire:loading.remove wire:target="situation" class="BaseballBases">
+                            <div class="BaseballBases__Wrapper flex relative justify-center">
+                                <div @class([
+                                    'diamond first-base border',
+                                    'border-blue-600' => isset($this->situation['onFirst']),
+                                ]) style="border-width: 4px; margin-bottom: falsepx">
+                                </div>
+                                <div @class([
+                                    'diamond second-base border',
+                                    'border-blue-600' => isset($this->situation['onFirst']),
+                                ]) style="border-width: 4px; margin-bottom: 8px"></div>
+                                <div @class([
+                                    'diamond third-base border',
+                                    'border-blue-600' => isset($this->situation['onFirst']),
+                                ]) style="border-width: 4px; margin-bottom: falsepx">
+                                </div>
+                            </div>
+                        </div>
+
+                    @endif
+                {{-- </div> --}}
 
             </div>
 

@@ -53,7 +53,7 @@ class SyncGames implements ShouldQueue
 
             foreach ($games as $game) {
                 $id = Str::of(Str::chopStart($game['$ref'], config('espn.games').'/'))->explode('?')[0];
-                array_push($jobs, new SyncGame($id));
+                array_push($jobs, new SyncGame($id, 'default'));
             }
         }
 

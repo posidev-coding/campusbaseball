@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Play;
 use App\Jobs\Feeds\SyncGame;
 use App\Jobs\Feeds\SyncTeam;
 use Illuminate\Database\Eloquent\Model;
@@ -11,9 +12,11 @@ class Game extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'status' => 'array',
-        'venue' => 'array',
+        'game_date' => 'date',
         'game_time' => 'datetime',
+        'status' => 'array',
+        'resources' => 'array',
+        'venue' => 'array',
         'broadcasts' => 'array',
         'away_box' => 'array',
         'away_stats' => 'array',
@@ -45,6 +48,11 @@ class Game extends Model
         return $this->hasOne(Team::class, 'id', 'away_id');
     }
 
+    public function plays()
+    {
+        return $this->hasMany(Play::class);
+    }
+
     public function getCompletedAttribute()
     {
         return $this->status_id == 3;
@@ -57,6 +65,13 @@ class Game extends Model
 
     protected static function booted(): void
     {
+
+        static::saving(function (Game $game) {
+
+            // dd($game->game_time);
+            // $game->game_date = Carbon::parse($game->game_date)->setTimeZone('America/New_York')->toDateString();
+
+        });
 
         static::updated(function (Game $game) {
 

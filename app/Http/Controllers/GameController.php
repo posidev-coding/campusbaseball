@@ -46,13 +46,18 @@ class GameController extends Controller
 
     public static function store($game)
     {
+
         $model = Game::find($game->id);
+        $game_time = $game->game_time->shiftTimezone('UTC')->setTimezone('America/New_York');
+
+        $attributes = $game->toArray();
+        $attributes['game_time'] = $game_time;
 
         if ($model) {
-            $model->fill($game->toArray());
+            $model->fill($attributes);
             $model->save();
         } else {
-            $model = Game::create($game->toArray());
+            $model = Game::create($attributes);
         }
 
         return $model;
@@ -77,10 +82,39 @@ class GameController extends Controller
             unset($venue['$ref']);
         }
 
+        $resources = [];
+
+        // Status
+        if (isset($comp['status']['$ref'])) {
+            $resources['status'] = $comp['status']['$ref'];
+        }
+
+        // Situation
+        if (isset($comp['situation']['$ref'])) {
+            $resources['situation'] = $comp['situation']['$ref'];
+        }
+
+        // Play-by-Play
+        if (isset($comp['details']['$ref'])) {
+            $resources['plays'] = $comp['details']['$ref'];
+        }
+
+        // Broadcasts
+        if (isset($comp['broadcasts']['$ref'])) {
+            $resources['broadcasts'] = $comp['broadcasts']['$ref'];
+        }
+
+        // Odds
+        if (isset($comp['odds']['$ref'])) {
+            $resources['odds'] = $comp['odds']['$ref'];
+        }
+
+        $localDate = Carbon::parse($data['date'])->setTimezone('UTC');
+
         $game = new Game([
             'id' => $gameId,
-            'game_date' => Carbon::parse($data['date'])->setTimezone('America/New_York')->toDateString(),
-            'game_time' => Carbon::parse($data['date'])->setTimezone('America/New_York'),
+            'game_date' => $localDate->toDateString(),
+            'game_time' => $localDate,
             'name' => $data['name'] ?? null,
             'short_name' => $data['shortName'] ?? null,
             'season_id' => $season,
@@ -92,6 +126,7 @@ class GameController extends Controller
             'home_rank' => $home_team['curatedRank']['current'] ?? 0,
             'home_winner' => $home_team['winner'] ?? 0,
             'venue' => $venue ?? null,
+            'resources' => $resources,
         ]);
 
         return $game;
@@ -222,8 +257,6 @@ class GameController extends Controller
 
         $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
         $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
-
-        dd($away_team['roster']['$ref']);
 
         $game->away_roster = isset($away_team['roster']) ? self::teamRoster($away_team['roster']['$ref']) : [];
         $game->home_roster = isset($home_team['roster']) ? self::teamRoster($home_team['roster']['$ref']) : [];

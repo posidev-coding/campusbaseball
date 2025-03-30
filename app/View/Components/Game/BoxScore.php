@@ -19,4 +19,5 @@ class BoxScore extends Component
     {
         return view('components.game.box-score');
     }
+
 }
