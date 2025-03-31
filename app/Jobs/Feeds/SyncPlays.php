@@ -7,10 +7,11 @@ use App\Models\Play;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Events\NewPlays;
 
 use function PHPUnit\Framework\assertFalse;
 
-class SyncGamePlays implements ShouldQueue
+class SyncPlays implements ShouldQueue
 {
     use Queueable;
 
@@ -32,27 +33,31 @@ class SyncGamePlays implements ShouldQueue
 
     public function handle(): void
     {
-        
+
         $this->paginate();
-        
-        if($this->playCursor > 0) {
+
+        if ($this->playCursor > 0) {
             $this->game->play_page = $this->pageCursor;
             $this->game->play_cursor = $this->playCursor;
             $this->game->save();
         }
 
+        // if ($this->playCount > 0) {
+        //     NewPlays::dispatch($this->game->id);
+        // }
+        NewPlays::dispatch($this->game->id);
     }
 
     // recursive
     public function paginate()
     {
 
-        $data = Http::get($this->game->resources['plays'] . '&limit=25&page='.$this->pageCursor)->json();
+        $data = Http::get($this->game->resources['plays'] . '&limit=25&page=' . $this->pageCursor)->json();
 
-        foreach($data['items'] as $play) {
+        foreach ($data['items'] as $play) {
 
             // only upsert plays after the game cursor
-            if($play['id'] > $this->game->play_cursor) {
+            if ($play['id'] > $this->game->play_cursor) {
                 $model = Play::updateOrCreate(
                     [
                         'id' => $play['id']
@@ -66,21 +71,18 @@ class SyncGamePlays implements ShouldQueue
                         'text' => $play['text'] ?? '(Type) ' . $play['type']['text']
                     ]
                 );
-                $this->playCount ++;
+                $this->playCount++;
             }
 
             // only advance cursor once it has been stored
             $this->playCursor = $play['id'];
-            
         }
-        
-        if($data['pageIndex'] < $data['pageCount']) {
+
+        if ($data['pageIndex'] < $data['pageCount']) {
             $this->pageCursor++;
             $this->paginate();
         } else {
             return true;
         }
-
     }
-
 }
