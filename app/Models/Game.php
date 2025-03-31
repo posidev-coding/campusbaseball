@@ -53,7 +53,7 @@ class Game extends Model
         return $this->hasMany(Play::class);
     }
 
-    public function getCompletedAttribute()
+    public function getFinalAttribute()
     {
         return $this->status_id == 3;
     }

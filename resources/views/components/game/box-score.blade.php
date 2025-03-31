@@ -1,16 +1,12 @@
-@php
+<div class="flex justify-center">
 
-    $inningsPlayed = count($this->game->away_box);
-    $boxes = $inningsPlayed > 0 ? ( $inningsPlayed > 9 ? $inningsPlayed : 9) : 0;
-
-    $maxWidth = $boxes > 0 ? 'max-w-5xl' : 'max-w-sm';
-
-@endphp
-
-<div class="flex justify-center" wire:poll.10s="refresh">
-
-    <div class="border rounded-lg m-4 grow {{ $maxWidth }}">
-
+    <div @class([
+        'border rounded-lg mt-2 md:mt-4 lg:mx-4 grow',
+        'max-w-5xl' => count($this->game->away_box) > 12,
+        'max-w-4xl' => count($this->game->away_box) > 9,
+        'max-w-3xl' => count($this->game->away_box) > 0,
+        'max-w-sm' => count($this->game->away_box) == 0
+    ])>
         <div class="flex items-stretch w-full">
             <div class="flex flex-col">
                 <div class="bg-slate-100 h-7 border-b"></div>
@@ -38,66 +34,58 @@
                 </div>
             </div>
             <div class="flex grow">
-                <div class="grid grid-cols-{{ $boxes + 3 }} grow">
 
-                    @for ($i = 0; $i < $boxes; $i++)
-                        <div class="flex flex-col border-l text-sm font-light">
-                            <div @class([
-                                'h-7 place-content-center text-center text-gray-500 bg-slate-100 border-b',
-                                'text-gray-900 font-semibold' =>
-                                    !$this->game->completed && $i + 1 == $this->game->status['period'],
-                            ])>{{ $i + 1 }}</div>
-                            <div @class([
-                                'h-7 place-content-center text-center text-gray-700 border-b',
-                                'bg-blue-50' =>
-                                    !$this->game->completed &&
-                                    $i + 1 == $this->game->status['period'] &&
-                                    $this->game->status['periodPrefix'] == 'Top',
-                            ])>{{ $this->game->away_box[$i]['runs'] ?? '-' }}</div>
-                            <div @class([
-                                'h-7 place-content-center text-center text-gray-700',
-                                'bg-blue-50' =>
-                                    !$this->game->completed &&
-                                    $i + 1 == $this->game->status['period'] &&
-                                    $this->game->status['periodPrefix'] == 'Bottom',
-                            ])>{{ $this->game->home_box[$i]['runs'] ?? '-' }}</div>
-                        </div>
+                @foreach($innings as $inning)
 
-                    @endfor
-
-                    <div class="flex flex-col border-l font-semibold text-sm">
-                        <div class="h-7 place-content-center text-center text-gray-500 bg-slate-100 border-b">R</div>
-                        <div class="h-7 place-content-center text-center text-gray-700 border-b">
-                            {{ $this->game->away_runs ?? '-' }}
-                        </div>
-                        <div class="h-7 place-content-center text-center text-gray-700">
-                            {{ $this->game->home_runs ?? '-' }}
-                        </div>
+                    <div class="flex flex-col grow border-l text-sm font-light">
+                        <div @class([
+                            'h-7 place-content-center text-center text-gray-500 bg-slate-100 border-b',
+                            'text-gray-900 font-semibold' =>!$this->game->final && $inning['away']['inning'] == $this->game->status['period'],
+                        ])>{{ $inning['away']['inning'] }}</div>
+                        <div @class([
+                            'h-7 place-content-center text-center text-gray-700 border-b',
+                            'bg-blue-50' =>
+                                !$this->game->final && $inning['away']['inning'] == $this->game->status['period'] && $this->game->status['periodPrefix'] == 'Top',
+                        ])>{{ $inning['away']['runs'] }}</div>
+                        <div @class([
+                            'h-7 place-content-center text-center text-gray-700',
+                            'bg-blue-50' =>
+                                !$this->game->final && $box['inning'] == $this->game->status['period'] && $this->game->status['periodPrefix'] == 'Bottom',
+                        ])>{{ $inning['home']['runs'] }}</div>
                     </div>
-                    <div class="flex flex-col border-l font-semibold text-sm">
-                        <div class="h-7 place-content-center text-center text-gray-500 bg-slate-100 border-b">H</div>
-                        <div class="h-7 place-content-center text-center text-gray-700 border-b">
-                            {{ $this->game->away_hits ?? '-' }}
-                        </div>
-                        <div class="h-7 place-content-center text-center text-gray-700">
-                            {{ $this->game->home_hits ?? '-' }}
-                        </div>
+
+                @endforeach
+
+                <div class="flex flex-col grow border-l font-semibold text-sm">
+                    <div class="h-7 place-content-center text-center text-gray-500 bg-slate-100 border-b">R</div>
+                    <div class="h-7 place-content-center text-center text-gray-700 border-b">
+                        {{ $this->game->away_runs ?? '-' }}
                     </div>
-                    <div class="flex flex-col border-l font-semibold text-sm">
-                        <div class="h-7 place-content-center text-center text-gray-500 bg-slate-100 border-b">E</div>
-                        <div class="h-7 place-content-center text-center text-gray-700 border-b">
-                            {{ $this->game->away_errors ?? '-' }}
-                        </div>
-                        <div class="h-7 place-content-center text-center text-gray-700">
-                            {{ $this->game->home_errors ?? '-' }}
-                        </div>
+                    <div class="h-7 place-content-center text-center text-gray-700">
+                        {{ $this->game->home_runs ?? '-' }}
+                    </div>
+                </div>
+                <div class="flex flex-col grow border-l font-semibold text-sm">
+                    <div class="h-7 place-content-center text-center text-gray-500 bg-slate-100 border-b">H</div>
+                    <div class="h-7 place-content-center text-center text-gray-700 border-b">
+                        {{ $this->game->away_hits ?? '-' }}
+                    </div>
+                    <div class="h-7 place-content-center text-center text-gray-700">
+                        {{ $this->game->home_hits ?? '-' }}
+                    </div>
+                </div>
+                <div class="flex flex-col grow border-l font-semibold text-sm">
+                    <div class="h-7 place-content-center text-center text-gray-500 bg-slate-100 border-b">E</div>
+                    <div class="h-7 place-content-center text-center text-gray-700 border-b">
+                        {{ $this->game->away_errors ?? '-' }}
+                    </div>
+                    <div class="h-7 place-content-center text-center text-gray-700">
+                        {{ $this->game->home_errors ?? '-' }}
                     </div>
                 </div>
             </div>
-
         </div>
 
-        
         @if (isset($this->situation['pitcher']))
 
             @php
@@ -195,6 +183,6 @@
 
         @endif
 
-
     </div>
+    
 </div>

@@ -42,7 +42,7 @@
                             class="w-12 h-12" />
                     </div>
                     <div class="text-3xl md:text-4xl font-bold">
-                        @if ($game->completed && $game->away_runs < $game->home_runs)
+                        @if ($game->final && $game->away_runs < $game->home_runs)
                             <span class="text-gray-400">{{ $game->away_runs }}</span>
                         @else
                             <span class="text-gray-700">{{ $game->away_runs }}</span>
@@ -59,10 +59,7 @@
             <!-- Status -->
             <div class="w-1/3 md:w-2/12 flex flex-col items-center space-y-0.5 text-xs tracking-tighter text-gray-500">
 
-                {{-- <flux:icon.loading wire:loading wire:target="refresh" class="size-4" /> --}}
-
-                {{-- <div wire:loading.remove wire:target="refresh"> --}}
-                    @if (!$game->completed && isset($game->broadcasts[0]['station']))
+                    @if (!$game->final && isset($game->broadcasts[0]['station']))
                         <span>{{ $game->broadcasts[0]['station'] }}</span>
                     @endif
 
@@ -104,7 +101,6 @@
                         </div>
 
                     @endif
-                {{-- </div> --}}
 
             </div>
 
@@ -113,7 +109,7 @@
 
                 @if ($game->status_id != 1)
                     <div class="text-3xl md:text-4xl font-bold">
-                        @if ($game->completed && $game->home_runs < $game->away_runs)
+                        @if ($game->final && $game->home_runs < $game->away_runs)
                             <span class="text-gray-400">{{ $game->home_runs }}</span>
                         @else
                             <span class="text-gray-700">{{ $game->home_runs }}</span>
@@ -167,56 +163,9 @@
     </div>
 
     <div>
-        {{-- Content --}}
         @if ($game->status_id > 1)
             <x-game.box-score :game="$game" :situation="$situation" />
         @endif
     </div>
-    {{-- 
-    <!-- Wrapping Grid -->
-    <div class="mx-auto grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-4">
-
-        <div class="flex flex-col gap-2 order-3 lg:order-2 lg:col-span-6">
-
-            @unless ($game->status_desc == 'Scheduled')
-                <x-game-summary.playcast :drives="$summary['drives']" :scoring="$summary['scoring']" :home="$game->home" :away="$game->awayTeam" />
-            @endunless
-
-            <x-game-summary.game-articles :article="$summary['article']" :stories="$summary['news']" />
-
-        </div>
-
-        <div class="flex flex-col gap-2 order-1 lg:col-span-3">
-
-            <x-game-summary.venue :venue="$summary['venue']" />
-            @if ($game->status_desc == 'Scheduled')
-                @if (isset($summary['prediction']) && !empty($summary['prediction']))
-                    <x-game-summary.prediction wire:ignore :game="$summary['prediction']" />
-                @endif
-                <x-game-summary.playmakers :game="$summary['leaders']" />
-            @else
-                <x-game-summary.playmakers :game="$summary['leaders']" />
-                @if (isset($summary['prediction']) && !empty($summary['prediction']))
-                    <x-game-summary.prediction wire:ignore :game="$summary['prediction']" />
-                @endif
-            @endif
-
-            <x-game-summary.probability :game="$summary['probability']" />
-
-        </div>
-
-        <div class="flex flex-col gap-2 order-2 lg:order-3 lg:col-span-3">
-
-            <x-game-summary.game-contests :game="$game->id" />
-
-            @foreach ($summary['standings']['groups'] as $conference)
-                <x-game-summary.conference-standings :conference="$conference" :teams="$game->teams" />
-            @endforeach
-
-            <x-game-summary.team-stats :game="$summary['boxscore']" />
-
-        </div>
-
-    </div> --}}
-
 </div>
+   
