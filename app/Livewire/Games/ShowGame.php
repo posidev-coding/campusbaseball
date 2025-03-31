@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Pages\Games;
+namespace App\Livewire\Games;
 
 use Flux\Flux;
 use App\Models\Game;

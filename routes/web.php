@@ -1,13 +1,13 @@
 <?php
 
 use App\Livewire\Feeds\Feeds;
-use App\Livewire\Pages\Conferences\ShowConference as Conference;
-use App\Livewire\Pages\Conferences\ViewConferences as Standings;
-use App\Livewire\Pages\Games\ShowGame as Game;
-use App\Livewire\Pages\Games\ViewGames as Scores;
-use App\Livewire\Pages\Rankings\ViewRankings as Rankings;
-use App\Livewire\Pages\Teams\ShowTeam as Team;
-use App\Livewire\Pages\Teams\ViewTeams as Teams;
+use App\Livewire\Conferences\ShowConference as Conference;
+use App\Livewire\Conferences\ViewConferences as Standings;
+use App\Livewire\Games\ShowGame as Game;
+use App\Livewire\Games\ViewGames as Scores;
+use App\Livewire\Rankings\ViewRankings as Rankings;
+use App\Livewire\Teams\ShowTeam as Team;
+use App\Livewire\Teams\ViewTeams as Teams;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 

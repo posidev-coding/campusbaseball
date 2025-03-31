@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Pages\Rankings;
+namespace App\Livewire\Rankings;
 
 use App\Models\Ranking;
 use Livewire\Component;

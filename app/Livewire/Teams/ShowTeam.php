@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Pages\Teams;
+namespace App\Livewire\Teams;
 
 use App\Models\Team;
 use Livewire\Component;

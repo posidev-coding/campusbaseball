@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Pages\Conferences;
+namespace App\Livewire\Conferences;
 
 use App\Models\Group as Conference;
 use Livewire\Component;

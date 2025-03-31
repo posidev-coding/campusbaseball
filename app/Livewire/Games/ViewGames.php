@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Pages\Games;
+namespace App\Livewire\Games;
 
 use App\Models\Calendar;
 use App\Models\Game;
