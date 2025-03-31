@@ -11,8 +11,10 @@ use Flux\Flux;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Feeds')]
 class Feeds extends Component
 {
     public $sortBy = 'created_at';

@@ -41,7 +41,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('home_runs')->default(0);
             $table->unsignedTinyInteger('home_hits')->default(0);
             $table->unsignedTinyInteger('home_errors')->default(0);
-            $table->boolean('home_winner')->default(false);            
+            $table->boolean('home_winner')->default(false);
             $table->json('home_box')->nullable();
             $table->json('home_stats')->nullable();
             $table->json('home_records')->nullable();

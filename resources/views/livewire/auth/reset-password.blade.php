@@ -9,8 +9,9 @@ use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Volt\Component;
+use Livewire\Attributes\Title;
 
-new #[Layout('components.layouts.auth')] class extends Component {
+new #[Layout('components.layouts.auth')] #[Title('Reset Password')] class extends Component {
     #[Locked]
     public string $token = '';
     public string $email = '';

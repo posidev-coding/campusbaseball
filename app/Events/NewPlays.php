@@ -22,7 +22,7 @@ class NewPlays implements ShouldBroadcast
      */
     public function broadcastOn(): Channel
     {
-        return new Channel('game.' . $this->game);
+        return new Channel('game.'.$this->game);
     }
 
     /**

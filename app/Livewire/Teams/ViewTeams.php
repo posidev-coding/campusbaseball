@@ -4,8 +4,10 @@ namespace App\Livewire\Teams;
 
 use App\Models\Conference;
 use App\Models\Team;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Teams')]
 class ViewTeams extends Component
 {
     public $conference;

@@ -3,8 +3,10 @@
 namespace App\Livewire\Rankings;
 
 use App\Models\Ranking;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Rankings')]
 class ViewRankings extends Component
 {
     public int $week;

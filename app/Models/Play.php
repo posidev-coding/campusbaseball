@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Team;
 use Illuminate\Database\Eloquent\Model;
 
 class Play extends Model
@@ -10,7 +9,7 @@ class Play extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'runners' => 'array'
+        'runners' => 'array',
     ];
 
     protected $with = ['team'];

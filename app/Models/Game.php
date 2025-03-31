@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Play;
 use App\Jobs\Feeds\SyncGame;
 use App\Jobs\Feeds\SyncTeam;
 use Illuminate\Database\Eloquent\Model;

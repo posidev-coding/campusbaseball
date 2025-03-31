@@ -13,4 +13,11 @@ class ShowTeam extends Component
     {
         $this->team = $team;
     }
+
+    public function render()
+    {
+        return view('livewire.teams.show-team')->title($this->team->location.' '.$this->team->name)->layoutData([
+            'icon' => $this->team->logos[0]['href'] ?? null,
+        ]);
+    }
 }

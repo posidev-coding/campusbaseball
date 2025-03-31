@@ -5,8 +5,10 @@ namespace App\Livewire\Games;
 use App\Models\Calendar;
 use App\Models\Game;
 use Carbon\Carbon;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Scores')]
 class ViewGames extends Component
 {
     public $date;

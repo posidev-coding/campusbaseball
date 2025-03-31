@@ -13,4 +13,9 @@ class ShowConference extends Component
     {
         $this->conference = $conference;
     }
+
+    public function render()
+    {
+        return view('livewire.conferences.show-conference')->title($this->conference->short_name);
+    }
 }

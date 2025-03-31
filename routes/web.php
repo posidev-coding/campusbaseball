@@ -1,8 +1,8 @@
 <?php
 
-use App\Livewire\Feeds\Feeds;
 use App\Livewire\Conferences\ShowConference as Conference;
 use App\Livewire\Conferences\ViewConferences as Standings;
+use App\Livewire\Feeds\Feeds;
 use App\Livewire\Games\ShowGame as Game;
 use App\Livewire\Games\ViewGames as Scores;
 use App\Livewire\Rankings\ViewRankings as Rankings;

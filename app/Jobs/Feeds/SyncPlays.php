@@ -2,26 +2,28 @@
 
 namespace App\Jobs\Feeds;
 
+use App\Events\NewPlays;
 use App\Models\Game;
 use App\Models\Play;
-use App\Events\NewPlays;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Foundation\Queue\Queueable;
-
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class SyncPlays implements ShouldQueue
 {
     use Queueable;
 
     public $tries = 1;
+
     private int $limit = 2;
 
     private Game $game;
 
     private int $playCursor;
+
     private int $pageCursor;
+
     private int $playCount;
 
     public function __construct(int $game, $all = false)
@@ -51,7 +53,8 @@ class SyncPlays implements ShouldQueue
     public function extractId($url, $prefix): int
     {
         $path = strstr($url, $prefix);
-        $withoutParams = strstr($path, "?", true); 
+        $withoutParams = strstr($path, '?', true);
+
         return intval(Str::of($withoutParams)->explode('/')[1]);
     }
 
@@ -59,7 +62,7 @@ class SyncPlays implements ShouldQueue
     public function paginate()
     {
 
-        $data = Http::get($this->game->resources['plays'] . '&limit=50&page=' . $this->pageCursor)->json();
+        $data = Http::get($this->game->resources['plays'].'&limit=50&page='.$this->pageCursor)->json();
 
         foreach ($data['items'] as $play) {
 
@@ -72,21 +75,21 @@ class SyncPlays implements ShouldQueue
                 $batter_id = null;
                 $runners = [];
 
-                if(isset($play['participants'])) {
+                if (isset($play['participants'])) {
                     foreach ($play['participants'] as $athlete) {
-                        if($athlete['type'] == 'pitcher') {
+                        if ($athlete['type'] == 'pitcher') {
                             $pitcher_id = $this->extractId($athlete['athlete']['$ref'], 'athletes/');
-                        } else if($athlete['type'] == 'batter') {
+                        } elseif ($athlete['type'] == 'batter') {
                             $batter_id = $this->extractId($athlete['athlete']['$ref'], 'athletes/');
-                        } else if(in_array($athlete['type'], ['onFirst', 'onSecond', 'onThird'])) {
+                        } elseif (in_array($athlete['type'], ['onFirst', 'onSecond', 'onThird'])) {
                             array_push($runners, $athlete['type']);
                         }
                     }
                 }
-                
+
                 $model = Play::updateOrCreate(
                     [
-                        'id' => $play['id']
+                        'id' => $play['id'],
                     ],
                     [
                         'game_id' => $this->game->id,
@@ -101,7 +104,7 @@ class SyncPlays implements ShouldQueue
                         'inning_display' => $play['period']['displayValue'],
                         'type_id' => $play['type']['id'],
                         'type_text' => $play['type']['text'],
-                        'text' => $play['text'] ?? '(Type) ' . $play['type']['text'],
+                        'text' => $play['text'] ?? '(Type) '.$play['type']['text'],
                         'scoring_play' => $play['scoringPlay'] ?? false,
                         'outs' => intval($play['outs']) ?? 0,
                         'score_value' => intval($play['scoreValue']) ?? 0,
@@ -110,7 +113,7 @@ class SyncPlays implements ShouldQueue
                         'away_errors' => intval($play['awayErrors']) ?? 0,
                         'home_runs' => intval($play['homeScore']) ?? 0,
                         'home_hits' => intval($play['homeHits']) ?? 0,
-                        'home_errors' => intval($play['homeErrors']) ?? 0
+                        'home_errors' => intval($play['homeErrors']) ?? 0,
                     ]
                 );
                 $this->playCount++;

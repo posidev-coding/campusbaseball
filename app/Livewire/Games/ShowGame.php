@@ -2,23 +2,29 @@
 
 namespace App\Livewire\Games;
 
-use App\Models\Game;
-use Livewire\Component;
-use App\Jobs\Feeds\SyncPlays;
-use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\GameController;
+use App\Jobs\Feeds\SyncPlays;
+use App\Models\Game;
+use Illuminate\Support\Facades\Http;
+use Livewire\Component;
 
 class ShowGame extends Component
 {
     public $syncRate = 5; // Minutes between full game refreshes when live or behind
 
     public Game $game;
+
     public $situation;
 
     public function mount(Game $game)
     {
         $this->game = $game;
         $this->refresh();
+    }
+
+    public function render()
+    {
+        return view('livewire.games.show-game')->title($this->game->away->abbreviation.' @ '.$this->game->home->abbreviation);
     }
 
     public function refresh()
@@ -54,10 +60,10 @@ class ShowGame extends Component
             if ($liveOrBehind && isset($this->game->resources['plays'])) {
                 SyncPlays::dispatch($this->game->id);
             }
-        } else if($this->game->final) {
+        } elseif ($this->game->final) {
 
             // Game is final, do some cleanup
-            if (isset($this->game->resources['plays']) && !$this->game->play_cursor) {
+            if (isset($this->game->resources['plays']) && ! $this->game->play_cursor) {
                 SyncPlays::dispatch($this->game->id);
             }
 

@@ -35,7 +35,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('home_runs')->default(0);
             $table->unsignedTinyInteger('home_hits')->default(0);
             $table->unsignedTinyInteger('home_errors')->default(0);
-            
+
             $table->timestamps();
 
             $table->index('game_id');
