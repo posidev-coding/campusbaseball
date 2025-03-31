@@ -32,7 +32,7 @@ class ViewGames extends Component
             ->limit(7)
             ->get();
 
-        return view('livewire.pages.games.view-games');
+        return view('livewire.games.view-games');
     }
 
     #[\Livewire\Attributes\Computed]

@@ -3,8 +3,7 @@
     <div @class([
         'border rounded-lg mt-2 md:mt-4 lg:mx-4 grow',
         'max-w-5xl' => count($this->game->away_box) > 12,
-        'max-w-4xl' => count($this->game->away_box) > 9,
-        'max-w-3xl' => count($this->game->away_box) > 0,
+        'max-w-4xl' => count($this->game->away_box) > 0,
         'max-w-sm' => count($this->game->away_box) == 0
     ])>
         <div class="flex items-stretch w-full">

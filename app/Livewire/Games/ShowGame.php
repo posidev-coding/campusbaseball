@@ -2,11 +2,9 @@
 
 namespace App\Livewire\Games;
 
-use Flux\Flux;
 use App\Models\Game;
-use App\Models\Play;
 use Livewire\Component;
-use Livewire\Attributes\On; 
+use App\Jobs\Feeds\SyncPlays;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\GameController;
 
@@ -16,23 +14,11 @@ class ShowGame extends Component
 
     public Game $game;
     public $situation;
-    public $plays;
-
-    #[On('echo:game.{game.id},.Plays')] 
-    public function newPlays($event)
-    {
-        $this->plays();
-    }
 
     public function mount(Game $game)
     {
         $this->game = $game;
         $this->refresh();
-    }
-
-    public function plays()
-    {
-        $this->plays = Play::where('game_id', $this->game->id)->orderBy('id', 'DESC')->get();
     }
 
     public function refresh()
@@ -46,20 +32,35 @@ class ShowGame extends Component
         // live or behind and due for round trip
         if ($liveOrBehind && $lastSync > $this->syncRate) {
             $this->game = GameController::sync($this->game->id, 'live');
-        } else if($liveOrBehind && isset($this->game->resources['situation'])) {
+        }
+
+        if ($liveOrBehind) {
 
             // Rehydrate status
-            $status = Http::get($this->game->resources['status'])->json();
-            unset($status['$ref']);
+            if (isset($this->game->resources['status'])) {
+                $status = Http::get($this->game->resources['status'])->json();
+                unset($status['$ref']);
 
-            $this->game->status_id = $status['type']['id'];
-            $this->game->status = $status;
+                $this->game->status_id = $status['type']['id'];
+                $this->game->status = $status;
+            }
+
+            // Situation
+            if ($liveOrBehind && isset($this->game->resources['situation'])) {
+                $this->situation = Http::get($this->game->resources['situation'])->json();
+            }
+
+            // Plays
+            if ($liveOrBehind && isset($this->game->resources['plays'])) {
+                SyncPlays::dispatch($this->game->id);
+            }
+        } else if($this->game->final) {
+
+            // Game is final, do some cleanup
+            if (isset($this->game->resources['plays']) && !$this->game->play_cursor) {
+                SyncPlays::dispatch($this->game->id);
+            }
+
         }
-
-        if($liveOrBehind && isset($this->game->resources['situation'])) {
-            $this->situation = Http::get($this->game->resources['situation'])->json();
-        }
-
     }
-
 }

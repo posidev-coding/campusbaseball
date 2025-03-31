@@ -1,4 +1,4 @@
-<div wire:poll.15s="refresh">
+<div wire:poll.30s="refresh">
 
     <div class="-ml-8 -mr-8 -mt-8 pt-4">
 
@@ -165,6 +165,9 @@
     <div>
         @if ($game->status_id > 1)
             <x-game.box-score :game="$game" :situation="$situation" />
+            @if(isset($game->resources['plays']))
+                <livewire:game.scoring-summary :game="$game"/>
+            @endif
         @endif
     </div>
 </div>
