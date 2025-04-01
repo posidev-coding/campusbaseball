@@ -2,11 +2,12 @@
 
 namespace App\Livewire\Games;
 
-use App\Models\Calendar;
-use App\Models\Game;
 use Carbon\Carbon;
-use Livewire\Attributes\Title;
+use App\Models\Game;
 use Livewire\Component;
+use App\Models\Calendar;
+use Livewire\Attributes\Title;
+use Illuminate\Support\Facades\Session;
 
 #[Title('Scores')]
 class ViewGames extends Component
@@ -22,7 +23,14 @@ class ViewGames extends Component
     public function mount()
     {
         $this->season = config('espn.year');
-        $this->date = today()->format('Y-m-d');
+
+        $this->date = Session::get('calendar-date', function () {
+
+            return Calendar::where('season_id', $this->season)
+                ->where('calendar_type', 'ondays')
+                ->whereDate('calendar_date', '>=', today())
+                ->min('calendar_date');
+        });
     }
 
     public function render()
@@ -57,6 +65,7 @@ class ViewGames extends Component
     public function setDate($dt)
     {
         $this->date = $dt;
+        Session::put('calendar-date', $this->date);
     }
 
     public function paginate($direction)
