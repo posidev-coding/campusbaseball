@@ -75,21 +75,6 @@ select:focus[data-flux-control] {
     @apply size-4;
 } */
 
-.BaseballBases {
-	-ms-flex-negative: 0;
-	flex-shrink: 0;
-	padding: 1px 0;
-    display: inline-block;
-    position: relative;
-}
-
-.BaseballBases__Wrapper {
-	-webkit-box-orient: horizontal;
-	-webkit-box-direction: reverse;
-	-ms-flex-direction: row-reverse;
-	flex-direction: row-reverse;
-}
-
 .diamond {
 	border-style: solid;
 	-webkit-transform: rotate(45deg);

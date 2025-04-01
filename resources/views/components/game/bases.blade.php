@@ -1,28 +1,9 @@
-@props(['runners' => [], 'small' => false])
+@props(['runners' => [], 'size' => 6])
 
-<div class="BaseballBases">
-  <div class="BaseballBases__Wrapper flex relative justify-center">
-      <div @class([
-          'diamond first-base border',
-          'border-blue-600' => in_array('onFirst', $runners),
-          'border-7' => !$small,
-          'border-4' => $small,
-          'mb-0' => $small
-      ])></div>
-      <div @class([
-          'diamond second-base border',
-          'border-blue-600' => in_array('onSecond', $runners),
-          'border-7' => !$small,
-          'border-4' => $small,
-          'mb-[14px]' => !$small,
-          'mb-[8px]' => $small,
-      ])></div>
-      <div @class([
-          'diamond third-base border',
-          'border-blue-600' => in_array('onThird', $runners),
-          'border-7' => !$small,
-          'border-4' => $small,
-          'mb-0' => $small
-      ])></div>
+{{-- <div class="BaseballBases"> --}}
+  <div class="flex flex-row-reverse relative justify-center">
+      <div class="diamond first-base mb-0 border border-{{ $size }} {{ in_array('onFirst', $runners) ? 'border-blue-600 dark:border-yellow-300' : 'dark:border-gray-500' }}"></div>
+      <div class="diamond second-base border border-{{ $size }} mb-[{{ $size * 2 }}px] {{ in_array('onSecond', $runners) ? 'border-blue-600 dark:border-yellow-300' : 'dark:border-gray-500' }}"></div>
+      <div class="diamond third-base mb-0 border-{{ $size }} {{ in_array('onThird', $runners) ? 'border-blue-600 dark:border-yellow-300' : 'dark:border-gray-500' }}"></div>
   </div>
-</div>
+{{-- </div> --}}
