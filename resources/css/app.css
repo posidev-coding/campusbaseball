@@ -44,6 +44,9 @@
     --color-winner: var(--color-black);
     --color-loser: var(--color-muted);
 
+    --color-out: var(--color-red-700);
+    --color-not-out: var(--color-light);
+
 }
 
 @layer theme {
@@ -55,8 +58,12 @@
         --color-body: var(--color-slate-800);
 
         --color-live: var(--color-yellow-400);
+
         --color-winner: var(--color-lighter);
         --color-loser: var(--color-muted);
+
+        --color-out: var(--color-red-700);
+        --color-not-out: var(--color-muted);
 
         --color-card: var(--color-dark);
         --color-card-header: --alpha(var(--color-slate-700) / 50%);
@@ -118,7 +125,14 @@ select:focus[data-flux-control] {
 	transition: border-color .5s cubic-bezier(.62,.28,.23,.99);
 }
 
-.first-base, .third-base {
+.out {
+	border-style: solid;
+    border-radius: 10px;
+    -webkit-transition: border-color .5s cubic-bezier(.62,.28,.23,.99);
+	transition: border-color .5s cubic-bezier(.62,.28,.23,.99);
+}
+
+.first-base, .first-out, .third-base, .third-out {
 	-ms-flex-item-align: end;
 	align-self: flex-end;
 }

@@ -7,6 +7,7 @@ use App\Jobs\Feeds\SyncPlays;
 use App\Models\Game;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class ShowGame extends Component
 {
@@ -16,6 +17,12 @@ class ShowGame extends Component
 
     public $situation;
     public $runners;
+
+    #[On('echo:game.{game.id},.Plays')]
+    public function newPlays($event)
+    {
+        $this->game = GameController::sync($this->game->id, 'live');
+    }
 
     public function mount(Game $game)
     {
@@ -49,8 +56,15 @@ class ShowGame extends Component
                 $status = Http::get($this->game->resources['status'])->json();
                 unset($status['$ref']);
 
+                $changed = $status['type']['shortDetail'] != $this->game->status['type']['shortDetail'];
+
                 $this->game->status_id = $status['type']['id'];
                 $this->game->status = $status;
+
+                if($changed) {
+                    $this->game->save();
+                }
+
             }
 
             // Situation
