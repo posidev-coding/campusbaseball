@@ -175,37 +175,12 @@
                     </div>
                 </div>
 
-                <!-- Bases -->
-                @if ($game->status_id == 2 && isset($this->situation['outs']))
-                    <div class="flex flex-col space-y-1 text-center">
-                        <div class="BaseballBases">
-                            <div class="BaseballBases__Wrapper flex relative justify-center">
-                                <div @class([
-                                    'diamond first-base border',
-                                    'border-b dark:border-b-slate-500' => isset($this->situation['onFirst']),
-                                ]) style="border-width: 7px;"></div>
-                                <div @class([
-                                    'diamond second-base border',
-                                    'border-b dark:border-b-slate-500' => isset($this->situation['onFirst']),
-                                ]) style="border-width: 7px; margin-bottom: 14px"></div>
-                                <div @class([
-                                    'diamond third-base border',
-                                    'border-b dark:border-b-slate-500' => isset($this->situation['onFirst']),
-                                ]) style="border-width: 7px;"></div>
-                            </div>
-                        </div>
-                        <div class="text-gray-700 text-[10px]">
-                            {{ $this->situation['outs'] . ($this->situation['outs'] == 1 ? ' out' : ' outs') }}
-                        </div>
-                    </div>
-                @endif
-
                 <!-- Last Play -->
-                {{-- @if ($lastPlay)
+                @isset($lastPlay['text'])
                     <div>
-                        {{ $lastPlay['text'] }}
+                        {{ $lastPlay['text']}}
                     </div>
-                @endif --}}
+                @endisset
 
             </div>
 
