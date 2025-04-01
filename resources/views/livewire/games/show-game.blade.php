@@ -63,7 +63,7 @@
 
                     <div class="font-semibold flex items-center">
                         <div @class([
-                            'text-red-600 dark:text-amber-400' => $game->status_id == 2,
+                            'text-red-600 dark:text-yellow-400' => $game->status_id == 2,
                         ])>
                             {{ $game->status['type']['shortDetail'] }}
                         </div>
@@ -78,8 +78,8 @@
                     @if ($game->status_id == 2 && isset($this->situation['outs']))
 
                         <flux:icon.loading wire:loading wire:target="situation" class="size-4" />
-
-                        <x-game.bases :runners="$this->runners" size="5"/>
+                        
+                        <x-game.bases :runners="$this->runners" size="6"/>
 
                     @endif
 
