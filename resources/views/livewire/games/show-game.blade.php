@@ -80,16 +80,7 @@
             <!-- Status -->
             <div class="flex flex-col shrink items-center space-y-0.5 px-2 md:px-4 lg:px-6 text-sm font-light text-muted dark:text-lighter">
 
-                    @if($game->status_id == 1)
-
-                        <div @class([
-                                'font-semibold md:text-base',
-                                'text-red-600 dark:text-yellow-400' => $game->status_id == 2,
-                            ])>
-                            {{ $game->status['type']['shortDetail'] }}
-                        </div>
-
-                    @elseif ($game->status_id == 2)
+                    @if ($game->status_id == 2)
 
                         <div class="flex items-center space-x-4">
 
@@ -99,7 +90,13 @@
                             <x-game.bases :runners="$this->runners" size="5" outs="1"/>
 
                         </div>
-
+                    @else 
+                        <div @class([
+                            'font-semibold md:text-base',
+                            'text-red-600 dark:text-yellow-400' => $game->status_id == 2,
+                        ])>
+                            {{ $game->status['type']['shortDetail'] }}
+                        </div>
                     @endif
 
             </div>
