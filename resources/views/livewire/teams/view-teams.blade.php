@@ -25,7 +25,7 @@
                 'flex items-center relative space-x-4 bg-white shadow hover:shadow-lg rounded-lg p-2 cursor-pointer hover:border-gray-400',
             ])>
                 @isset($team->logos[0])
-                    <img src="{{ $team->logos[0]['href'] }}" class="h-10 w-10" />
+                    <img src="{{ $team->logo }}" class="h-10 w-10" />
                 @endisset
                 <div class="flex flex-col">
 

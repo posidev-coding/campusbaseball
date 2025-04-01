@@ -17,7 +17,7 @@
                     <flux:table.cell>{{ $rank->current }}</flux:table.cell>
                     <flux:table.cell>
                         <div class="flex items-center space-x-4">
-                            <img src="{{ $rank->team->logos[0]['href'] }}" class="h-6 w-6" />
+                            <img src="{{ $rank->team->logo }}" class="h-6 w-6" />
                             <div>{{ $rank->team->location }}</div>
                         </div>
                     </flux:table.cell>

@@ -86,6 +86,14 @@
                 </div>
                 <flux:spacer />
 
+                <flux:radio.group x-data size="sm" variant="segmented" x-model="$flux.appearance">
+                    <flux:radio value="light" icon="sun"></flux:radio>
+                    <flux:radio value="dark" icon="moon"></flux:radio>
+                    <flux:radio value="system" icon="computer-desktop"></flux:radio>
+                </flux:radio.group>
+                
+                <flux:spacer />
+
                 @auth
                     <flux:dropdown position="top" align="end">
                         <flux:profile

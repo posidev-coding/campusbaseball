@@ -1,7 +1,7 @@
 <div class="flex items-center justify-between">
     <div class="flex items-center space-x-4">
         @isset($team->logos[0])
-            <img src="{{ $team->logos[0]['href'] }}" class="h-8 w-8" />
+            <img src="{{ $team->logo }}" class="h-8 w-8" />
         @endisset
         <div class="flex flex-col">
             <div class="flex flex-row items-center">

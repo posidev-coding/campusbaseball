@@ -15,10 +15,12 @@ class ShowGame extends Component
     public Game $game;
 
     public $situation;
+    public $runners;
 
     public function mount(Game $game)
     {
         $this->game = $game;
+        $this->runners = [];
         $this->refresh();
     }
 
@@ -54,6 +56,11 @@ class ShowGame extends Component
             // Situation
             if ($liveOrBehind && isset($this->game->resources['situation'])) {
                 $this->situation = Http::get($this->game->resources['situation'])->json();
+
+                if(isset($this->situation['onFirst'])) array_push($this->runners, 'onFirst');
+                if(isset($this->situation['onSecond'])) array_push($this->runners, 'onSecond');
+                if(isset($this->situation['onThird'])) array_push($this->runners, 'onThird');
+
             }
 
             // Plays
