@@ -9,20 +9,20 @@
                 <div class="flex flex-col items-end">
                     <div class="flex items-center">
                         @if ($game->away_rank > 0)
-                            <span class="text-sm text-gray-500 dark:text-zinc-300 font-medium mr-1.5">{{ $game->away_rank }}</span>
+                            <span class="text-sm text-gray-500 dark:text-slate-300 font-medium mr-1.5">{{ $game->away_rank }}</span>
                         @endif
                         @if ($game->away_id > 0)
-                            <a href="{{ route('team', $game->away_id) }}" class="hover:text-blue-800 dark:text-zinc-300 dark:hover:text-white">
+                            <a href="{{ route('team', $game->away_id) }}" class="hover:text-blue-800 dark:text-slate-300 dark:hover:text-white">
                                 <span class="hidden md:flex">{{ $game->away->location . ' ' . $game->away->name }}</span>
                                 <span class="flex md:hidden">{{ $game->away->abbreviation }}</span>
                             </a>
                         @else
-                            <span class="text-gray-500 dark:text-zinc-300">TBD</span>
+                            <span class="text-gray-500 dark:text-slate-300">TBD</span>
                         @endif
                     </div>
 
                     @if (isset($game->away_records))
-                        <div class="flex items-center space-x-1 text-xs text-gray-500 dark:text-zinc-300 p-0 font-light">
+                        <div class="flex items-center space-x-1 text-xs text-gray-500 dark:text-slate-300 p-0 font-light">
                             @foreach ($game->away_records as $rec)
                                 @if ($rec['type'] == 'total')
                                     <div class="flex">{{ $rec['summary'] }}</div>
@@ -44,7 +44,7 @@
                         @if ($game->final && $game->away_runs < $game->home_runs)
                             <span class="text-gray-400">{{ $game->away_runs }}</span>
                         @else
-                            <span class="text-gray-700 dark:text-zinc-100">{{ $game->away_runs }}</span>
+                            <span class="text-gray-700 dark:text-slate-100">{{ $game->away_runs }}</span>
                         @endif
                     </div>
                 @else
@@ -55,7 +55,7 @@
             </div>
 
             <!-- Status -->
-            <div class="w-1/3 md:w-2/12 flex flex-col items-center space-y-0.5 text-sm font-light text-gray-500 dark:text-zinc-300">
+            <div class="w-1/3 md:w-2/12 flex flex-col items-center space-y-0.5 text-sm font-light text-gray-500 dark:text-slate-300">
 
                     @if (!$game->final && isset($game->broadcasts[0]['station']))
                         <span>{{ $game->broadcasts[0]['station'] }}</span>
@@ -69,7 +69,7 @@
                         </div>
                         @if ($game->status_id == 2 && isset($this->situation['outs']))
                             <flux:icon.dot />
-                            <div class="text-black dark:text-zinc-300">
+                            <div class="text-black dark:text-slate-300">
                                 {{ $this->situation['outs'] . ($this->situation['outs'] == 1 ? ' out' : ' outs') }}
                             </div>
                         @endif
@@ -93,7 +93,7 @@
                         @if ($game->final && $game->home_runs < $game->away_runs)
                             <span class="text-gray-400">{{ $game->home_runs }}</span>
                         @else
-                            <span class="text-gray-700 dark:text-zinc-100">{{ $game->home_runs }}</span>
+                            <span class="text-gray-700 dark:text-slate-100">{{ $game->home_runs }}</span>
                         @endif
                     </div>
                     <div class="px-3 md:px-6">
@@ -109,21 +109,21 @@
 
                     <div class="flex items-center">
                         @if ($game->home_rank > 0)
-                            <span class="text-sm text-gray-500 dark:text-zinc-300 font-medium mr-1.5">{{ $game->home_rank }}</span>
+                            <span class="text-sm text-gray-500 dark:text-slate-300 font-medium mr-1.5">{{ $game->home_rank }}</span>
                         @endif
                         @if ($game->home_id > 0)
-                            <a href="{{ route('team', $game->away_id) }}" class="hover:text-blue-800 dark:text-zinc-300 dark:hover:text-white">
+                            <a href="{{ route('team', $game->away_id) }}" class="hover:text-blue-800 dark:text-slate-300 dark:hover:text-white">
                                 <span
                                     class="hidden md:flex">{{ $game->home->location . ' ' . $game->home->name }}</span>
                                 <span class="flex md:hidden">{{ $game->home->abbreviation }}</span>
                             </a>
                         @else
-                            <span class="text-gray-500 dark:text-zinc-300">TBD</span>
+                            <span class="text-gray-500 dark:text-slate-300">TBD</span>
                         @endif
                     </div>
 
                     @if (isset($game->home_records))
-                        <div class="flex items-center space-x-1 text-xs text-gray-500 dark:text-zinc-300 p-0 font-light">
+                        <div class="flex items-center space-x-1 text-xs text-gray-500 dark:text-slate-300 p-0 font-light">
                             @foreach ($game->home_records as $rec)
                                 @if ($rec['type'] == 'total')
                                     <div class="flex">{{ $rec['summary'] }}</div>

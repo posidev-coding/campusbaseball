@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="{{ $font }} min-h-screen bg-white dark:bg-slate-800">
+    <body class="{{ $font }} min-h-screen bg-body">
         <flux:sidebar sticky stashable class="border-r border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 

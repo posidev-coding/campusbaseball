@@ -25,21 +25,22 @@
                                         <x-game.team-logo :team="$play->team" size="6" />
                                     </div>
                                         
-                                    <div class="flex flex-col -space-y-1">
+                                    {{-- <div class="flex flex-col -space-y-1.5">
                                         @if($play['inning_type'] == 'Top')
-                                            <flux:icon.caret-up-fill variant="micro" class="text-cyan-400"/>
-                                            <flux:icon.caret-down variant="micro"/>
+                                            <flux:icon.caret-up-fill variant="micro" class="text-black dark:text-cyan-400"/>
+                                            <flux:icon.caret-down variant="micro" class="dark:text-muted"/>
                                         @else
-                                            <flux:icon.caret-up variant="micro"/>
-                                            <flux:icon.caret-down-fill variant="micro" class="text-cyan-400"/>
+                                            <flux:icon.caret-up variant="micro" class="dark:text-muted"/>
+                                            <flux:icon.caret-down-fill variant="micro" class="text-black dark:text-cyan-400"/>
                                         @endif
                                     </div>
 
-                                    <div class="-ml-1 text-gray-800 dark:text-muted">{{ str_replace(' Inning', '', $play['inning_display']) }}</div>
+                                    <div class="-ml-1 text-gray-800 dark:text-muted">{{ str_replace(' Inning', '', $play['inning_display']) }}</div> --}}
+
                                     <div class="flex w-8">
                                         <x-game.bases :runners="$play['runners']" size="4"/>
                                     </div>
-                                    <div class="text-black dark:text-zinc-200 text-xs font-medium">
+                                    <div class="text-black dark:text-slate-200 text-xs font-medium">
                                         {{ $play['outs'] . ($play['outs'] == 1 ? ' out' : ' outs') }}
                                     </div>
                                 </div>

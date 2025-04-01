@@ -40,12 +40,12 @@
                             'text-gray-900 font-semibold' =>!$this->game->final && $inning['away']['inning'] == $this->game->status['period'],
                         ])>{{ $inning['away']['inning'] }}</div>
                         <div @class([
-                            'h-7 place-content-center text-center text-gray-700 dark:text-zinc-300 bg-lighter/10 dark:bg-card border-b dark:border-b-muted',
+                            'h-7 place-content-center text-center text-gray-700 dark:text-slate-300 bg-lighter/10 dark:bg-card border-b dark:border-b-muted',
                             'bg-blue-50' =>
                                 !$this->game->final && $inning['away']['inning'] == $this->game->status['period'] && $this->game->status['periodPrefix'] == 'Top',
                         ])>{{ $inning['away']['runs'] }}</div>
                         <div @class([
-                            'h-7 place-content-center text-center text-gray-700 dark:text-zinc-300 bg-lighter/10 dark:bg-card',
+                            'h-7 place-content-center text-center text-gray-700 dark:text-slate-300 bg-lighter/10 dark:bg-card',
                             'bg-blue-50' =>
                                 !$this->game->final && $box['inning'] == $this->game->status['period'] && $this->game->status['periodPrefix'] == 'Bottom',
                         ])>{{ $inning['home']['runs'] }}</div>
