@@ -10,6 +10,13 @@
                     <p class="text-xs text-black font-black shrink-0">{{ $date->calendar_date->format('D') }}</p>
                     <p class="text-xs text-black font-semibold shrink-0">{{ $date->calendar_date->format('M d') }}</p>
                 </div>
+            @elseif ($date->calendar_type == 'offdays')
+                <div class="shrink-0 text-gray-300">
+                    <div class="flex flex-col items-center uppercase shrink-0">
+                        <p class="text-xs shrink-0">{{ $date->calendar_date->format('D') }}</p>
+                        <p class="text-xs font-light shrink-0">{{ $date->calendar_date->format('M d') }}</p>
+                    </div>
+                </div>
             @else
                 <flux:button variant="ghost" wire:click="setDate('{{ $date->calendar_date->toDateString() }}')"
                     class="cursor-pointer shrink-0">
