@@ -36,7 +36,7 @@
     --color-lighter: var(--color-slate-100);
     --color-lightest: var(--color-slate-50);
 
-    --color-card: --alpha(var(--color-lightest) / 85%);
+    --color-card: --alpha(var(--color-lighter) / 10%);
     --color-card-header: var(--color-lighter);
 
     --color-live: var(--color-red-600);
