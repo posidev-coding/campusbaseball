@@ -38,4 +38,14 @@ class Team extends Model
     {
         return $this->liveHome ?? $this->liveAway;
     }
+
+    public function getLogoAttribute()
+    {
+        return $this->logos[0]['href'] ?? null;
+    }
+
+    public function getDarkLogoAttribute()
+    {
+        return $this->logos[1]['href'] ?? null;
+    }
 }
