@@ -11,6 +11,7 @@ class Game extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'finalized' => 'boolean',
         'game_date' => 'date',
         'game_time' => 'datetime',
         'status' => 'array',
