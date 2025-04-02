@@ -70,7 +70,7 @@ class SyncGames implements ShouldQueue
                 $games = Http::get($url)->json()['items'];
                 foreach ($games as $game) {
                     $id = Str::of(Str::chopStart($game['$ref'], config('espn.games').'/'))->explode('?')[0];
-                    array_push($jobs, new SyncGame($id, self::MODE));
+                    array_push($jobs, new SyncGame($id, $this->mode));
                 }
             }
         }
