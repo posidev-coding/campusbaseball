@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\Feeds\SyncTeam;
+use Carbon\Carbon;
 use App\Models\Game;
 use App\Models\Team;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use App\Jobs\Feeds\SyncTeam;
+use App\Jobs\Feeds\SyncPlays;
+use Illuminate\Support\Facades\Http;
 
 class GameController extends Controller
 {
@@ -26,7 +27,7 @@ class GameController extends Controller
             $game = self::boxes($game, $data);
         }
 
-        if ($mode == 'full') {
+        if ($mode == 'full' || $mode == 'final')  {
             $game = self::records($game, $data);
             $game = self::broadcasts($game, $data);
 
@@ -38,10 +39,16 @@ class GameController extends Controller
                 SyncTeam::dispatch($game->home_id);
             });
 
-            // $game = self::rosters($game, $data); // offload to job
+        }
+        
+        if($mode == 'final') {
+            // $game = self::rosters($game, $data); // offload to job, create separate model
+            SyncPlays::dispatch($game->id);
+            $game->finalized = true;
         }
 
         return self::store($game);
+
     }
 
     public static function store($game)
@@ -52,7 +59,8 @@ class GameController extends Controller
 
         $attributes = $game->toArray();
         $attributes['game_time'] = $game_time;
-
+        $attributes['game_date'] = $game_time;
+        
         if ($model) {
             $model->fill($attributes);
             $model->save();
@@ -304,7 +312,6 @@ class GameController extends Controller
                 }
 
                 $athlete['stats'][$category] = $stats;
-                // array_push($athlete['stats'][$category], $stats);
             }
 
             array_push($data, $athlete);
