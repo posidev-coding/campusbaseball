@@ -22,6 +22,7 @@ class GameController extends Controller
         $game = self::status($game, $data);
         $game = self::scores($game, $data);
 
+        // live
         if ($mode != 'default') {
             $game = self::stats($game, $data);
             $game = self::boxes($game, $data);

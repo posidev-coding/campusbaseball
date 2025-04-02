@@ -19,24 +19,25 @@ class SyncGames implements ShouldQueue
 
     const LIMIT = 1000;
 
-    const MODE = 'live';
-
     private array $events;
 
     private string $date;
 
+    private string $mode;
+
     private $presets = [
-        'today',
-        'tomorrow',
-        'yesterday',
-        'future',
-        'past',
-        'full',
+        'today', // live
+        'tomorrow', // full
+        'future', // full
+        'yesterday', // final
+        'past', // final
+        'full', // final
     ];
 
     public function __construct($date = 'today')
     {
         $this->date = $date;
+        $this->mode = in_array($date, ['full','past','yesterday']) ? 'final' : (in_array($date, ['tomorrow','future']) ? 'full' : 'live');
     }
 
     public function handle(): void
@@ -59,7 +60,7 @@ class SyncGames implements ShouldQueue
             })->get();
 
             foreach ($games as $game) {
-                array_push($jobs, new SyncGame($game->id, self::MODE));
+                array_push($jobs, new SyncGame($game->id, $this->mode));
             }
         } else {
             // get dates & paginate the api
