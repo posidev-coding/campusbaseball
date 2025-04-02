@@ -73,8 +73,9 @@ class Game extends Model
 
         static::saving(function (Game $game) {
 
-            // dd($game->game_time);
-            // $game->game_date = Carbon::parse($game->game_date)->setTimeZone('America/New_York')->toDateString();
+            if (($game->final || $game->cancelled) && !$game->finalized) {
+                SyncGame::dispatch($game->id, 'final');
+            }
 
         });
 
