@@ -58,6 +58,11 @@ class Game extends Model
         return $this->status_id == 3;
     }
 
+    public function getCancelledAttribute()
+    {
+        return $this->status_id == 5;
+    }
+
     public function getLiveAttribute()
     {
         return $this->status_id == 2;

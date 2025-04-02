@@ -82,7 +82,7 @@ class ShowGame extends Component
                 SyncPlays::dispatch($this->game->id);
             }
 
-        } elseif ($this->game->final && !$this->game->finalized) {
+        } elseif (($this->game->final || $this->game->cancelled) && !$this->game->finalized) {
             $this->game = GameController::sync($this->game->id, 'final');
         } else {
             // Game finalized, nothing to sync
