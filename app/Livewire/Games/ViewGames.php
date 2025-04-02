@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Games;
 
-use Carbon\Carbon;
-use App\Models\Game;
-use Livewire\Component;
 use App\Models\Calendar;
-use Livewire\Attributes\Title;
+use App\Models\Game;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
+use Livewire\Attributes\Title;
+use Livewire\Component;
 
 #[Title('Scores')]
 class ViewGames extends Component

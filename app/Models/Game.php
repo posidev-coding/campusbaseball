@@ -73,7 +73,7 @@ class Game extends Model
 
         static::saved(function (Game $game) {
 
-            if (($game->final || $game->cancelled) && !$game->finalized) {
+            if (($game->final || $game->cancelled) && ! $game->finalized) {
                 SyncGame::dispatch($game->id, 'final');
             }
 

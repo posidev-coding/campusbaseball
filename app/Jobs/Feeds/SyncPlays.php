@@ -62,11 +62,11 @@ class SyncPlays implements ShouldQueue
     public function paginate()
     {
 
-        if (!isset($this->game->resources['plays'])) {
+        if (! isset($this->game->resources['plays'])) {
             return false;
         }
 
-        $data = Http::get($this->game->resources['plays'] . '&limit=50&page=' . $this->pageCursor)->json();
+        $data = Http::get($this->game->resources['plays'].'&limit=50&page='.$this->pageCursor)->json();
 
         foreach ($data['items'] as $play) {
 
@@ -108,7 +108,7 @@ class SyncPlays implements ShouldQueue
                         'inning_display' => $play['period']['displayValue'],
                         'type_id' => $play['type']['id'],
                         'type_text' => $play['type']['text'],
-                        'text' => $play['text'] ?? '(Type) ' . $play['type']['text'],
+                        'text' => $play['text'] ?? '(Type) '.$play['type']['text'],
                         'scoring_play' => $play['scoringPlay'] ?? false,
                         'outs' => intval($play['outs']) ?? 0,
                         'score_value' => intval($play['scoreValue']) ?? 0,

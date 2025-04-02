@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+use App\Jobs\Feeds\SyncPlays;
+use App\Jobs\Feeds\SyncTeam;
 use App\Models\Game;
 use App\Models\Team;
-use Illuminate\Support\Str;
-use App\Jobs\Feeds\SyncTeam;
-use App\Jobs\Feeds\SyncPlays;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class GameController extends Controller
 {
@@ -28,7 +28,7 @@ class GameController extends Controller
             $game = self::boxes($game, $data);
         }
 
-        if ($mode == 'full' || $mode == 'final')  {
+        if ($mode == 'full' || $mode == 'final') {
             $game = self::records($game, $data);
             $game = self::broadcasts($game, $data);
 
@@ -41,10 +41,12 @@ class GameController extends Controller
             });
 
         }
-        
-        if($mode == 'final') {
+
+        if ($mode == 'final') {
             // $game = self::rosters($game, $data); // offload to job, create separate model
-            if(isset($game->resources['plays'])) SyncPlays::dispatch($game->id);
+            if (isset($game->resources['plays'])) {
+                SyncPlays::dispatch($game->id);
+            }
             $game->finalized = true;
         }
 
@@ -61,7 +63,7 @@ class GameController extends Controller
         $attributes = $game->toArray();
         $attributes['game_time'] = $game_time;
         $attributes['game_date'] = $game_time;
-        
+
         if ($model) {
             $model->fill($attributes);
             $model->save();

@@ -6,8 +6,8 @@ use App\Http\Controllers\GameController;
 use App\Jobs\Feeds\SyncPlays;
 use App\Models\Game;
 use Illuminate\Support\Facades\Http;
-use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class ShowGame extends Component
 {
@@ -16,6 +16,7 @@ class ShowGame extends Component
     public Game $game;
 
     public $situation;
+
     public $runners;
 
     #[On('echo:game.{game.id},.Plays')]
@@ -61,7 +62,7 @@ class ShowGame extends Component
                 $this->game->status_id = $status['type']['id'];
                 $this->game->status = $status;
 
-                if($changed) {
+                if ($changed) {
                     $this->game->save();
                 }
 
@@ -71,9 +72,15 @@ class ShowGame extends Component
             if ($liveOrBehind && isset($this->game->resources['situation'])) {
                 $this->situation = Http::get($this->game->resources['situation'])->json();
 
-                if(isset($this->situation['onFirst'])) array_push($this->runners, 'onFirst');
-                if(isset($this->situation['onSecond'])) array_push($this->runners, 'onSecond');
-                if(isset($this->situation['onThird'])) array_push($this->runners, 'onThird');
+                if (isset($this->situation['onFirst'])) {
+                    array_push($this->runners, 'onFirst');
+                }
+                if (isset($this->situation['onSecond'])) {
+                    array_push($this->runners, 'onSecond');
+                }
+                if (isset($this->situation['onThird'])) {
+                    array_push($this->runners, 'onThird');
+                }
 
             }
 
@@ -82,7 +89,7 @@ class ShowGame extends Component
                 SyncPlays::dispatch($this->game->id);
             }
 
-        } elseif (($this->game->final || $this->game->cancelled) && !$this->game->finalized) {
+        } elseif (($this->game->final || $this->game->cancelled) && ! $this->game->finalized) {
             $this->game = GameController::sync($this->game->id, 'final');
         } else {
             // Game finalized, nothing to sync
