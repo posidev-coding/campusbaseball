@@ -37,16 +37,16 @@ class SyncPlays implements ShouldQueue
     public function handle(): void
     {
 
-        $this->paginate();
+        if ($plays = $this->paginate()) {
+            if ($this->playCursor > 0) {
+                $this->game->play_page = $this->pageCursor;
+                $this->game->play_cursor = $this->playCursor;
+                $this->game->save();
+            }
 
-        if ($this->playCursor > 0) {
-            $this->game->play_page = $this->pageCursor;
-            $this->game->play_cursor = $this->playCursor;
-            $this->game->save();
-        }
-
-        if ($this->playCount > 0) {
-            NewPlays::dispatch($this->game->id);
+            if ($this->playCount > 0) {
+                NewPlays::dispatch($this->game->id);
+            }
         }
     }
 
@@ -62,7 +62,11 @@ class SyncPlays implements ShouldQueue
     public function paginate()
     {
 
-        $data = Http::get($this->game->resources['plays'].'&limit=50&page='.$this->pageCursor)->json();
+        if (!isset($this->game->resources['plays'])) {
+            return false;
+        }
+
+        $data = Http::get($this->game->resources['plays'] . '&limit=50&page=' . $this->pageCursor)->json();
 
         foreach ($data['items'] as $play) {
 
@@ -104,7 +108,7 @@ class SyncPlays implements ShouldQueue
                         'inning_display' => $play['period']['displayValue'],
                         'type_id' => $play['type']['id'],
                         'type_text' => $play['type']['text'],
-                        'text' => $play['text'] ?? '(Type) '.$play['type']['text'],
+                        'text' => $play['text'] ?? '(Type) ' . $play['type']['text'],
                         'scoring_play' => $play['scoringPlay'] ?? false,
                         'outs' => intval($play['outs']) ?? 0,
                         'score_value' => intval($play['scoreValue']) ?? 0,
