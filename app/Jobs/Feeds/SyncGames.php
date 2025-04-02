@@ -2,14 +2,16 @@
 
 namespace App\Jobs\Feeds;
 
-use App\Models\Calendar;
 use Carbon\Carbon;
+use App\Models\Game;
+use App\Models\Calendar;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Batchable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SyncGames implements ShouldQueue
 {
@@ -45,17 +47,30 @@ class SyncGames implements ShouldQueue
         }
 
         $jobs = [];
-        $dates = $this->getDates();
 
-        foreach ($dates as $date) {
-
-            $url = config('espn.games').'?dates='.Carbon::parse($date)->format('Ymd').'&limit='.self::LIMIT;
-
-            $games = Http::get($url)->json()['items'];
+        if ($this->date == 'live') {
+            // pull individual games from the database
+            $games = Game::where(function (Builder $query) {
+                // Unfinalized & live
+                $query->where("status_id", 2)->where("finalized", 0);
+            })->orWhere(function (Builder $query) {
+                // Or current date and game_time in past
+                $query->where("game_date", today())->where("game_time", "<=", now());
+            })->get();
 
             foreach ($games as $game) {
-                $id = Str::of(Str::chopStart($game['$ref'], config('espn.games').'/'))->explode('?')[0];
-                array_push($jobs, new SyncGame($id, self::MODE));
+                array_push($jobs, new SyncGame($game->id, self::MODE));
+            }
+        } else {
+            // get dates & paginate the api
+            $dates = $this->getDates();
+            foreach ($dates as $date) {
+                $url = config('espn.games') . '?dates=' . Carbon::parse($date)->format('Ymd') . '&limit=' . self::LIMIT;
+                $games = Http::get($url)->json()['items'];
+                foreach ($games as $game) {
+                    $id = Str::of(Str::chopStart($game['$ref'], config('espn.games') . '/'))->explode('?')[0];
+                    array_push($jobs, new SyncGame($id, self::MODE));
+                }
             }
         }
 
@@ -63,7 +78,7 @@ class SyncGames implements ShouldQueue
             $this->batch()->add($jobs);
         } else {
             Bus::batch($jobs)
-                ->name('Games '.$this->date)
+                ->name('Games ' . $this->date)
                 ->dispatch();
         }
     }
