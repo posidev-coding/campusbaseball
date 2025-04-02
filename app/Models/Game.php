@@ -71,7 +71,7 @@ class Game extends Model
     protected static function booted(): void
     {
 
-        static::saving(function (Game $game) {
+        static::saved(function (Game $game) {
 
             if (($game->final || $game->cancelled) && !$game->finalized) {
                 SyncGame::dispatch($game->id, 'final');
