@@ -81,13 +81,8 @@ class ShowGame extends Component
             if ($liveOrBehind && isset($this->game->resources['plays'])) {
                 SyncPlays::dispatch($this->game->id);
             }
-        } elseif ($this->game->final) {
-
-            // Game is final, do some cleanup
-            if (isset($this->game->resources['plays']) && ! $this->game->play_cursor) {
-                SyncPlays::dispatch($this->game->id);
-            }
-
+        } elseif ($this->game->final && !$this->game->finalized) {
+            $this->game = GameController::sync($this->game->id, 'final');
         }
     }
 }
