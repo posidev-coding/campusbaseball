@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('season_type_id');
 
             $table->unsignedTinyInteger('status_id')->default(1);
+            $table->boolean('finalized')->default(false);
 
             // Away Team
             $table->unsignedMediumInteger('away_id');
