@@ -18,6 +18,7 @@
                 <flux:menu.separator />
 
                 <flux:menu.submenu icon="table-properties" icon:variant="outline" heading="Games">
+                    <flux:menu.item wire:click="games('live')" class="cursor-pointer">Live</flux:menu.item>
                     <flux:menu.item wire:click="games('today')" class="cursor-pointer">Today</flux:menu.item>
                     <flux:menu.item wire:click="games('tomorrow')" class="cursor-pointer">Tomorrow</flux:menu.item>
                     <flux:menu.item wire:click="games('yesterday')" class="cursor-pointer">Yesterday</flux:menu.item>
