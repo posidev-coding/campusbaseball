@@ -79,6 +79,8 @@
                     </flux:table.rows>
                 </flux:table>
             </div>
+        @elseif ($plays && $loaded)
+            <p>Sorry, Play-by-play doesn't seem to be available for this game.</p>
         @else
             <x-skeleton.list />
         @endif

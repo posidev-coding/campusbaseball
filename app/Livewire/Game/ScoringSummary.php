@@ -10,13 +10,14 @@ use Livewire\Component;
 class ScoringSummary extends Component
 {
     public Game $game;
-
+    public $loaded = false;
     public $plays;
 
     #[On('echo:game.{game.id},.Plays')]
     public function newPlays($event)
     {
         $this->fetchPlays();
+        if(!$this->loaded) $this->loaded = true;
     }
 
     public function fetchPlays()
