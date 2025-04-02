@@ -17,6 +17,8 @@ class SyncGames implements ShouldQueue
 
     const LIMIT = 1000;
 
+    const MODE = 'live';
+
     private array $events;
 
     private string $date;
@@ -53,7 +55,7 @@ class SyncGames implements ShouldQueue
 
             foreach ($games as $game) {
                 $id = Str::of(Str::chopStart($game['$ref'], config('espn.games').'/'))->explode('?')[0];
-                array_push($jobs, new SyncGame($id, 'live'));
+                array_push($jobs, new SyncGame($id, self::MODE));
             }
         }
 
