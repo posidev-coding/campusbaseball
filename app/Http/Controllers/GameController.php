@@ -44,13 +44,10 @@ class GameController extends Controller
 
         // $game = self::rosters($game, $data); // offload to job, create separate model
 
-        
         $game = self::store($game);
         
-        if ($mode == 'final') {
-            if (isset($game->resources['plays'])) {
-                SyncPlays::dispatch($game->id, true, true);
-            }
+        if ($mode == 'final' && isset($game->resources['plays'])) {
+            SyncPlays::dispatch($game->id, true, true);
         }
 
         return $game;
