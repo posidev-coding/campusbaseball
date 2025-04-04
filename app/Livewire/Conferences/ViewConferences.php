@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Conferences;
 
-use App\Models\Group;
+use App\Models\Conference;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -13,6 +13,6 @@ class ViewConferences extends Component
     public function conferences()
     {
 
-        return Group::where('is_conference', 1)->orderBy('name')->get();
+        return Conference::whereHas('standings')->orderBy('name')->get();
     }
 }

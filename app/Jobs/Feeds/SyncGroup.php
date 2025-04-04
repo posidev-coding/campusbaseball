@@ -3,6 +3,8 @@
 namespace App\Jobs\Feeds;
 
 use App\Models\Group;
+use App\Models\Team;
+use App\Models\Standing;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -53,6 +55,8 @@ class SyncGroup implements ShouldQueue
             ]
         );
 
+        $this->standings($data);
+
         if ($this->cascade && isset($data['children']['$ref'])) {
 
             // get and add jobs
@@ -73,5 +77,48 @@ class SyncGroup implements ShouldQueue
                     ->dispatch();
             }
         }
+    }
+
+    public function extractId($url, $prefix): int
+    {
+        $path = strstr($url, $prefix);
+        $withoutParams = strstr($path, '?', true);
+
+        return intval(Str::of($withoutParams)->explode('/')[1]);
+    }
+
+    public function standings(mixed $data): void
+    {
+
+        if(!isset($data['standings']['$ref'])) {
+            return;
+        }
+
+        $conf_id = $data['id'];
+
+        $standings = Http::get(Http::get($data['standings']['$ref'])->json()['items'][0]['$ref'])->json()['standings'];
+
+        foreach($standings as $key => $team) {
+
+            $team_id = $this->extractId($team['team']['$ref'], 'teams/');
+
+            // upsert the standing model
+            $standing = Standing::updateOrCreate(
+                [
+                    'conference_id' => $conf_id,
+                    'team_id' => $team_id,
+                ],
+                [
+                    'ranking' => $key + 1,
+                    'record' => $team['records'][0]['summary'] ?? null,
+                    'stats' => $team['records'][0]['stats'] ?? null
+                ]
+            );
+
+            // sync team job
+            SyncTeam::dispatch($team['team']['$ref'], $conf_id);
+
+        }
+
     }
 }

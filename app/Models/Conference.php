@@ -18,6 +18,11 @@ class Conference extends Model
         return $this->hasMany(Team::class);
     }
 
+    public function standings()
+    {
+        return $this->hasMany(Standing::class)->orderBy('ranking');
+    }
+
     protected static function booted(): void
     {
 

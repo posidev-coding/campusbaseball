@@ -22,8 +22,11 @@ class SyncTeam implements ShouldQueue
 
     private $team_id;
 
-    public function __construct(string $req)
+    private $conf_id;
+
+    public function __construct(string $req, $assignToConference = null)
     {
+        $this->conf_id = $assignToConference;
         $this->url = Str::isUrl($req) ? $req : config('espn.teams').'/'.$req;
     }
 
@@ -39,26 +42,24 @@ class SyncTeam implements ShouldQueue
 
         $this->team_id = $data['id'];
 
-        $conf_id = null;
-
-        if (isset($data['groups'])) {
+        if (isset($data['groups']) && !$this->conf_id) {
             $group = Http::get($data['groups']['$ref'])->json();
 
             if (! $group['isConference'] && isset($group['parent'])) {
                 $parent = Http::get($group['parent']['$ref'])->json();
 
                 if ($parent['isConference']) {
-                    $conf_id = $parent['id'];
+                    $this->conf_id = $parent['id'];
                 }
             } else {
-                $conf_id = $group['id'];
+                $this->conf_id = $group['id'];
             }
         }
 
-        $team = Team::findOr($this->team_id, function () use ($data, $conf_id) {
+        $team = Team::findOr($this->team_id, function () use ($data) {
             return Team::create([
                 'id' => $this->team_id,
-                'conference_id' => $conf_id,
+                'conference_id' => $this->conf_id,
                 'slug' => $data['slug'] ?? null,
                 'location' => $data['location'] ?? null,
                 'name' => $data['name'] ?? null,
@@ -86,7 +87,7 @@ class SyncTeam implements ShouldQueue
             // Dont overwrite the conference ID once it's been set
             // Many teams need manual conference assignment because the ESPN API
             // Doesn't specificy one
-            $team->conference_id = $team->conference_id ?? $conf_id;
+            $team->conference_id = $team->conference_id ?? $this->conf_id;
 
             $team->save();
         }
