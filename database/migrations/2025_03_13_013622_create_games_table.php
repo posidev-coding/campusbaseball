@@ -24,6 +24,13 @@ return new class extends Migration
             $table->unsignedTinyInteger('status_id')->default(1);
             $table->boolean('finalized')->default(false);
 
+            // Available resources
+            $table->boolean('boxscore_available')->default(false);
+            $table->boolean('gamecast_available')->default(false);
+            $table->boolean('summary_available')->default(false);
+            $table->boolean('pbp_available')->default(false);
+            $table->boolean('watch_espn')->default(false);
+
             // Away Team
             $table->unsignedMediumInteger('away_id');
             $table->unsignedTinyInteger('away_rank')->default(0);
@@ -54,6 +61,7 @@ return new class extends Migration
             $table->json('status')->nullable();
             $table->json('venue')->nullable();
             $table->json('broadcasts')->nullable();
+
             $table->timestamps();
 
             $table->index('game_date');

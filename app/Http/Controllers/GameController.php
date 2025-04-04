@@ -138,6 +138,11 @@ class GameController extends Controller
             'home_winner' => $home_team['winner'] ?? 0,
             'venue' => $venue ?? null,
             'resources' => $resources,
+            'boxscore_available' => $comp['boxscoreAvailable'],
+            'gamecast_available' => $comp['gamecastAvailable'],
+            'summary_available' => $comp['summaryAvailable'],
+            'pbp_available' => $comp['playByPlayAvailable'],
+            'watch_espn' => $comp['onWatchESPN']
         ]);
 
         return $game;

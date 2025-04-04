@@ -11,6 +11,11 @@ class Game extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'boxscore_available' =>'boolean',
+        'gamecast_available' =>'boolean',
+        'summary_available' =>'boolean',
+        'pbp_available' =>'boolean',
+        'watch_espn' =>'boolean',
         'finalized' => 'boolean',
         'game_date' => 'date',
         'game_time' => 'datetime',
