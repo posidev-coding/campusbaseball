@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
+            $table->unsignedBigInteger('ncaa_id')->nullable();
             $table->date('game_date');
             $table->datetime('game_time');
             $table->string('name');
@@ -64,6 +65,7 @@ return new class extends Migration
 
             $table->timestamps();
 
+            // $table->index('home_id');
             $table->index('game_date');
             $table->index('play_cursor');
             $table->index('season_id');
