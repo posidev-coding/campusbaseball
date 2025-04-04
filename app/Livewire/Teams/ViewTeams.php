@@ -16,7 +16,7 @@ class ViewTeams extends Component
 
     public function mount()
     {
-        $this->conferences = Conference::orderBy('name')->get();
+        $this->conferences = Conference::orderBy('short_name')->get();
     }
 
     public function setConf($id)
@@ -34,8 +34,6 @@ class ViewTeams extends Component
     {
 
         $teams = Team::has('conference')->with('liveHome', 'liveAway');
-
-        // dd($teams->get()[0]);
 
         if ($this->conference) {
             $teams->where('conference_id', $this->conference);

@@ -6,7 +6,8 @@
 
         @foreach ($this->dates as $date)
             @if ($date->calendar_date->toDateString() == $this->date)
-                <div class="flex flex-col uppercase cursor-pointer border-b-2 border-blue-500 text-black dark:text-slate-200 text-center py-2 shrink-0">
+                <div
+                    class="flex flex-col uppercase cursor-pointer border-b-2 border-blue-500 text-black dark:text-slate-200 text-center py-2 shrink-0">
                     <p class="text-xs font-semibold shrink-0">{{ $date->calendar_date->format('D') }}</p>
                     <p class="text-xs font-medium shrink-0">{{ $date->calendar_date->format('M d') }}</p>
                 </div>
@@ -31,6 +32,25 @@
         <flux:button variant="filled" size="sm" wire:click="paginate('forward')" icon="chevron-right" />
 
     </div>
+
+    <!-- Conference Filter -->
+    {{-- <div class="flex items-center justify-center no-wrap mb-8 overflow-x-auto">
+
+        <flux:button.group>
+            @foreach ($this->conferences as $conf)
+                @if ($conf->id == $this->conference)
+                    <flux:button variant="primary" wire:click="clearConf()" class="cursor-pointer uppercase">
+                        {{ $conf->short_name }}
+                    </flux:button>
+                @else
+                    <flux:button wire:click="setConf('{{ $conf->id }}')" class="cursor-pointer uppercase">
+                        {{ $conf->short_name }}
+                    </flux:button>
+                @endif
+            @endforeach
+        </flux:button.group>
+
+    </div> --}}
 
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
 
