@@ -18,28 +18,29 @@
 
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
 
         @foreach ($this->teams as $team)
-            <a href="{{ route('team', $team->id) }}" @class([
-                'flex items-center relative space-x-4 bg-white shadow hover:shadow-lg rounded-lg p-2 cursor-pointer hover:border-gray-400',
-            ])>
+            <a href="{{ route('team', $team->id) }}"
+                class="flex flex-col relative items-center bg-card border border-gray-150 dark:border-muted rounded-lg p-2 cursor-pointer hover:border-gray-400">
+
                 @isset($team->logos[0])
-                    <img src="{{ $team->logo }}" class="h-10 w-10" />
+
+                    <div clas="flex">
+                        <img src="{{ $team->logo }}" alt="{{ $team->abbreviation }}" class="w-24 h-24 flex dark:hidden" />
+                        <img src="{{ $team->darkLogo }}" alt="{{ $team->abbreviation }}" class="w-24 h-24 hidden dark:flex" />
+                      </div>
+
                 @endisset
-                <div class="flex flex-col">
 
-                    <div class="text-black text-lg font-medium tracking-wide">
-                        {{ $team->location . ' ' . $team->name }}
-                    </div>
+                <flux:separator text="{{ $team->location }}" />
+                <div class="text-muted tracking-wider font-thin text-base">{{ $team->name }}</div>
 
-                    @if ($team->record)
-                        <div class="text-gray-400 text-sm font-light">({{ $team->record->summary }})</div>
-                    @endif
-                </div>
+                <div class="absolute top-1.5 right-2.5 text-muted text-[10px]">{{ $team->record->summary ?? null }}</div>
 
                 @isset($team->live)
-                    <div class="absolute flex flex-row-reverse items-center bottom-1.5 right-2.5">
+
+                    <div class="absolute flex items-center top-1.5 left-2.5">
                         <div class="flex">
                             <span class="relative flex size-1.5">
                                 <span
@@ -48,7 +49,7 @@
                             </span>
                         </div>
 
-                        <div class="text-[8px] mr-2">
+                        <div class="text-[10px] ml-1.5">
                             {{ $team->live->away_id == $team->id ? '@ ' . $team->live->home->abbreviation : 'vs ' . $team->live->away->abbreviation }}
                         </div>
 
