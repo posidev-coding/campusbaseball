@@ -26,9 +26,12 @@ class SyncPlays implements ShouldQueue
 
     private int $playCount;
 
-    public function __construct(int $game, $all = false)
+    private bool $finalize;
+
+    public function __construct(int $game, $all = false, $finalize = false)
     {
         $this->game = Game::find($game);
+        $this->finalize = $finalize;
         $this->pageCursor = $all ? 1 : ($this->game->play_page ?? 1);
         $this->playCursor = $this->game->play_cursor ?? 0;
         $this->playCount = 0;
@@ -47,6 +50,11 @@ class SyncPlays implements ShouldQueue
             if ($this->playCount > 0) {
                 NewPlays::dispatch($this->game->id);
             }
+        }
+
+        if($this->finalize) {
+            $this->game->finalized = true;
+            $this->game->save();
         }
     }
 
