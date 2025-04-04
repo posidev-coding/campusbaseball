@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Feeds;
 
+use App\Jobs\Feeds\NCAAGames;
 use App\Jobs\Feeds\SyncCalendar;
 use App\Jobs\Feeds\SyncGames;
 use App\Jobs\Feeds\SyncGroups;
@@ -79,7 +80,11 @@ class Feeds extends Component
     public function games($scope)
     {
 
-        SyncGames::dispatch($scope);
+        if($scope == 'ncaa') {
+            NCAAGames::dispatch();
+        } else {
+            SyncGames::dispatch($scope);
+        }
         Flux::toast(variant: 'success', text: 'Dispatched game sync for '.$scope);
     }
 
