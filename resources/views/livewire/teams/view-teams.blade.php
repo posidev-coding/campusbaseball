@@ -29,7 +29,7 @@
                     <div clas="flex">
                         <img src="{{ $team->logo }}" alt="{{ $team->abbreviation }}" class="w-24 h-24 flex dark:hidden" />
                         <img src="{{ $team->darkLogo }}" alt="{{ $team->abbreviation }}" class="w-24 h-24 hidden dark:flex" />
-                      </div>
+                    </div>
 
                 @endisset
 

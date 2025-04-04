@@ -1,12 +1,10 @@
 <div>
-    <flux:header>Conference Standings</flux:header>
-
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         @foreach ($this->conferences as $conf)
 
             <a href="{{ route('conference', $conf->id) }}" 
-                class="flex flex-col bg-card border dark:border-muted rounded-lg mt-2 md:mt-4 lg:mx-4 max-w-4xl grow cursor-pointer hover:border-gray-400">
+                class="flex flex-col bg-card border dark:border-muted rounded-lg lg:mx-4 max-w-4xl grow cursor-pointer hover:border-gray-400">
                 
                 <flux:table>
 
