@@ -2,18 +2,19 @@
 
 namespace App\Jobs\Feeds;
 
-use App\Models\Calendar;
-use App\Models\Game;
 use Carbon\Carbon;
+use App\Models\Game;
+use App\Models\Calendar;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Batchable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class SyncGames implements ShouldQueue
+class SyncGames implements ShouldQueue, ShouldBeUnique
 {
     use Batchable, Queueable;
 
@@ -33,6 +34,14 @@ class SyncGames implements ShouldQueue
         'past', // final
         'full', // final
     ];
+
+     /**
+      * Get the unique ID for the job.
+      */
+     public function uniqueId(): string
+     {
+         return $this->date . '.' . $this->mode;
+     }
 
     public function __construct($date = 'today')
     {

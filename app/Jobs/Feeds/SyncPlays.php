@@ -2,15 +2,16 @@
 
 namespace App\Jobs\Feeds;
 
-use App\Events\NewPlays;
 use App\Models\Game;
 use App\Models\Play;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Facades\Http;
+use App\Events\NewPlays;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class SyncPlays implements ShouldQueue
+class SyncPlays implements ShouldQueue, ShouldBeUnique
 {
     use Queueable;
 
@@ -27,6 +28,14 @@ class SyncPlays implements ShouldQueue
     private int $playCount;
 
     private bool $finalize;
+
+    /**
+     * Get the unique ID for the job.
+    */
+    public function uniqueId(): string
+    {
+        return $this->game->id;
+    }
 
     public function __construct(int $game, $all = false, $finalize = false)
     {

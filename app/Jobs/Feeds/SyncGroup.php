@@ -93,10 +93,18 @@ class SyncGroup implements ShouldQueue
         if(!isset($data['standings']['$ref'])) {
             return;
         }
-
+        
         $conf_id = $data['id'];
+        
+        $standings = Http::get($data['standings']['$ref'])->json()['items'][0]['$ref'];
+        
+        $standings = Http::get($standings)->json();
 
-        $standings = Http::get(Http::get($data['standings']['$ref'])->json()['items'][0]['$ref'])->json()['standings'];
+        if(!isset($standings['standings'])) {
+            return;
+        }
+
+        $standings = $standings['standings'];
 
         foreach($standings as $key => $team) {
 

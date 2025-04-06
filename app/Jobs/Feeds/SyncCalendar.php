@@ -2,16 +2,17 @@
 
 namespace App\Jobs\Feeds;
 
-use App\Models\Calendar;
-use App\Models\Season;
-use App\Models\SeasonType;
 use Carbon\Carbon;
+use App\Models\Season;
+use App\Models\Calendar;
+use App\Models\SeasonType;
 use Illuminate\Bus\Batchable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class SyncCalendar implements ShouldQueue
+class SyncCalendar implements ShouldQueue, ShouldBeUnique
 {
     use Batchable, Queueable;
 

@@ -7,9 +7,10 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 
-class NCAAGames implements ShouldQueue
+class NCAAGames implements ShouldQueue, ShouldBeUnique
 {
     use Batchable, Queueable;
 

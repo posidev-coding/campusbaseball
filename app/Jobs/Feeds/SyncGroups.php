@@ -6,8 +6,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class SyncGroups implements ShouldQueue
+class SyncGroups implements ShouldQueue, ShouldBeUnique
 {
     use Queueable;
 

@@ -2,11 +2,12 @@
 
 namespace App\Jobs\Feeds;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class SyncRankings implements ShouldQueue
+class SyncRankings implements ShouldQueue, ShouldBeUnique
 {
     use Queueable;
 
