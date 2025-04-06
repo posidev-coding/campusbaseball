@@ -21,38 +21,22 @@
 
                 <flux:navlist.group heading="Favorites" class="mt-4">
 
-                    <!-- Sample Favorites -->
-                    <flux:navlist.item href="/teams/tennessee" :current="request()->is('/teams/tennessee')" wire:navigate>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <img src="https://a.espncdn.com/i/teamlogos/ncaa/500/2633.png" class="w-5 mr-2"/>
-                                <span class="text-gray-400 text-xs mr-1">3</span>
-                                <span>Tennessee</span>
-                            </div>
-                            <span class="text-xs text-gray-400">8-0</span>
-                        </div>
-                    </flux:navlist.item>
+                    <!-- User Favorites -->
+                    @foreach(auth()->user()->favorites() as $favorite)
 
-                    <flux:navlist.item href="/teams/north-carolina" :current="request()->is('/teams/north-carolina')" wire:navigate>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <img src="https://a.espncdn.com/i/teamlogos/ncaa/500/153.png" class="w-5 mr-2"/>
-                                <span class="text-gray-400 text-xs mr-1">5</span>
-                                <span>North Carolina</span>
+                        <flux:navlist.item href="{{ route('team', $favorite->id) }}" :current="request()->is('/teams/{{ $favorite->id }}')" wire:navigate>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <x-game.team-logo :team="$favorite" size="5" />
+                                    <span>{{ $favorite->location }}</span>
+                                </div>
+                                <span class="text-xs text-gray-400">
+                                    {{ $favorite->record->summary }}
+                                </span>
                             </div>
-                            <span class="text-xs text-gray-400">9-0</span>
-                        </div>
-                    </flux:navlist.item>
+                        </flux:navlist.item>
 
-                    <flux:navlist.item href="/teams/wake-forest" :current="request()->is('/teams/wake-forest')" wire:navigate>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <img src="https://a.espncdn.com/i/teamlogos/ncaa/500/154.png" class="w-5 mr-2"/>
-                                <span>Wake Forest</span>
-                            </div>
-                            <span class="text-xs text-gray-400">8-1</span>
-                        </div>
-                    </flux:navlist.item>
+                    @endforeach
 
                 </flux:navlist.group>
 
