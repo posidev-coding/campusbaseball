@@ -23,7 +23,7 @@
 
                     <!-- User Favorites -->
                     @auth
-                        @isset(auth()->user()->favorites())
+                        @if(auth()->user()->favorites())
                             @foreach(auth()->user()->favorites() as $favorite)
 
                                 <flux:navlist.item href="{{ route('team', $favorite->id) }}" :current="request()->is('/teams/{{ $favorite->id }}')" wire:navigate>
@@ -53,7 +53,7 @@
                                 </flux:navlist.item>
 
                             @endforeach
-                        @endisset
+                        @endif
                     @endauth
 
                 </flux:navlist.group>
