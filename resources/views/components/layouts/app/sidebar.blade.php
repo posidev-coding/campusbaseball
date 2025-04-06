@@ -22,35 +22,37 @@
                 <flux:navlist.group heading="Favorites" class="mt-4">
 
                     <!-- User Favorites -->
-                    @foreach(auth()->user()->favorites() as $favorite)
+                    @auth
+                        @foreach(auth()->user()->favorites() as $favorite)
 
-                        <flux:navlist.item href="{{ route('team', $favorite->id) }}" :current="request()->is('/teams/{{ $favorite->id }}')" wire:navigate>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2">
-                                    <x-game.team-logo :team="$favorite" size="5" />
-                                    <span>{{ $favorite->location }}</span>
-                                </div>
-                                <span class="text-xs text-gray-400">
-                                    {{ $favorite->record->summary }}
-                                </span>
-                            </div>
-
-                            @isset($favorite->live)
-
-                                <div class="absolute flex items-center top-3 left-0">
-                                    <div class="flex">
-                                        <span class="relative flex size-1.5">
-                                            <span
-                                                class="absolute flex inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
-                                            <span class="relative inline-flex size-1.5 rounded-full bg-red-700 opacity-60"></span>
-                                        </span>
+                            <flux:navlist.item href="{{ route('team', $favorite->id) }}" :current="request()->is('/teams/{{ $favorite->id }}')" wire:navigate>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <x-game.team-logo :team="$favorite" size="5" />
+                                        <span>{{ $favorite->location }}</span>
                                     </div>
+                                    <span class="text-xs text-gray-400">
+                                        {{ $favorite->record->summary }}
+                                    </span>
                                 </div>
-                            @endisset
 
-                        </flux:navlist.item>
+                                @isset($favorite->live)
 
-                    @endforeach
+                                    <div class="absolute flex items-center top-3 left-0">
+                                        <div class="flex">
+                                            <span class="relative flex size-1.5">
+                                                <span
+                                                    class="absolute flex inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                                                <span class="relative inline-flex size-1.5 rounded-full bg-red-700 opacity-60"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                @endisset
+
+                            </flux:navlist.item>
+
+                        @endforeach
+                    @endauth
 
                 </flux:navlist.group>
 
