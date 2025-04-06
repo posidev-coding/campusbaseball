@@ -3,6 +3,7 @@
 use App\Jobs\Feeds\SyncGames;
 use App\Jobs\Feeds\SyncTeams;
 use App\Jobs\Feeds\SyncGroups;
+use App\Jobs\Feeds\SyncArticles;
 use App\Jobs\Feeds\SyncRankings;
 use Illuminate\Support\Facades\Schedule;
 
@@ -13,7 +14,8 @@ Schedule::job(new SyncGames('tomorrow'))->everyOddHour()->between('10:00', '23:0
 Schedule::job(new SyncGames('yesterday'))->twiceDaily(2, 8);
 Schedule::job(new SyncGames('future'))->dailyAt(6);
 
-// Conferences, Team & Rankings
+// Conferences, Teams, Articles & Rankings
 Schedule::job(new SyncGroups())->everyTwoHours();
 Schedule::job(new SyncTeams())->dailyAt(5);
+Schedule::job(new SyncArticles())->everyTwoHours(15);
 Schedule::job(new SyncRankings())->everyOddHour()->mondays()->between('4:00', '4:00');

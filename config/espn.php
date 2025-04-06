@@ -22,4 +22,7 @@ return [
     'rankings' => $baseUrl.'/rankings',
     'games' => $baseUrl.'/events',
 
+    // Site API resources
+    'news' => 'http://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/news?limit=100',
+
 ];

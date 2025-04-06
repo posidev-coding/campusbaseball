@@ -12,6 +12,8 @@
                     class="cursor-pointer">Conferences</flux:menu.item>
                 <flux:menu.item icon="hashtag" icon:variant="outline" wire:click="run('Rankings')"
                     class="cursor-pointer">Rankings</flux:menu.item>
+                <flux:menu.item icon="newspaper" icon:variant="outline" wire:click="run('Articles')"
+                    class="cursor-pointer">Articles</flux:menu.item>
                 <flux:menu.item icon="calendar" icon:variant="outline" wire:click="run('Calendar')"
                     class="cursor-pointer">Calendar</flux:menu.item>
 

@@ -6,6 +6,7 @@ use App\Jobs\Feeds\NCAAGames;
 use App\Jobs\Feeds\SyncCalendar;
 use App\Jobs\Feeds\SyncGames;
 use App\Jobs\Feeds\SyncGroups;
+use App\Jobs\Feeds\SyncNews;
 use App\Jobs\Feeds\SyncRankings;
 use App\Jobs\Feeds\SyncTeams;
 use Flux\Flux;
@@ -62,6 +63,11 @@ class Feeds extends Component
                 break;
             case 'Rankings':
                 SyncRankings::dispatch();
+                break;
+            case 'Articles':
+                $batch = Bus::batch([new SyncNews])
+                    ->name('Articles')
+                    ->dispatch();
                 break;
             case 'Calendar':
                 $batch = Bus::batch([new SyncCalendar])
