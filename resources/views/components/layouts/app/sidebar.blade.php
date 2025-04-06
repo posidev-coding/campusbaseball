@@ -34,6 +34,20 @@
                                     {{ $favorite->record->summary }}
                                 </span>
                             </div>
+
+                            @isset($favorite->live)
+
+                                <div class="absolute flex items-center top-3 left-0">
+                                    <div class="flex">
+                                        <span class="relative flex size-1.5">
+                                            <span
+                                                class="absolute flex inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                                            <span class="relative inline-flex size-1.5 rounded-full bg-red-700 opacity-60"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            @endisset
+
                         </flux:navlist.item>
 
                     @endforeach
