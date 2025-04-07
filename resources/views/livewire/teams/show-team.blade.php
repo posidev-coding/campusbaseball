@@ -86,9 +86,9 @@
         </flux:tabs>
 
         <flux:tab.panel name="home">
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div class="flex items-start space-x-4">
 
-                <div class="flex flex-col bg-card border dark:border-muted rounded-lg lg:mx-4 max-w-4xl grow hover:border-gray-400">
+                <div class="flex flex-col w-full md:w-1/2 lg:w-1/3 bg-card border dark:border-muted rounded-lg lg:mx-4 max-w-4xl hover:border-gray-400">
                     
                     <flux:table>
     
@@ -146,7 +146,7 @@
 
                 </div>
 
-                <div class="flex flex-col space-y-2 col-span-1 xl:col-span-2">
+                <div class="flex flex-col w-full md:w-1/2 lg:w-2/3 space-y-2">
                     <flux:heading>Upcoming Games</flux:heading>
                     @foreach ($this->upcoming as $game)
                         <x-games.card :game="$game" />
@@ -156,7 +156,7 @@
             </div>
         </flux:tab.panel>
         <flux:tab.panel name="schedule">
-            <div class="flex flex-col space-y-2 col-span-1 xl:col-span-2">
+            <div class="flex flex-col space-y-2">
                 <flux:heading>Full Schedule</flux:heading>
                 @foreach ($this->schedule as $game)
                     <x-games.card :game="$game" />
