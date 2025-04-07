@@ -2,14 +2,14 @@
 
 namespace App\Livewire\Games;
 
+use Carbon\Carbon;
+use App\Models\Game;
+use Livewire\Component;
 use App\Models\Calendar;
 use App\Models\Conference;
-use App\Models\Game;
-use Carbon\Carbon;
-use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Title;
-use Livewire\Component;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Database\Eloquent\Builder;
 
 #[Title('Scores')]
 class ViewGames extends Component
@@ -67,35 +67,37 @@ class ViewGames extends Component
     public function games()
     {
 
-        $this->conference = 27;
-
         $live = Game::where('game_date', $this->date)
             ->whereNotIn('status_id', [1, 3]);
 
-        // if ($this->conference) {
-        //     $live->whereHas('home', function (Builder $query) {
-        //         $query->where('conference_id', $this->conference);
-        //     })
-        //     ->orWhereHas('away', function (Builder $query) {
-        //         $query->where('conference_id', $this->conference);
-        //     });
-        // }
+        if ($this->conference) {
+            $live->where(function(Builder $builder) {
+                $builder->whereHas('home', function (Builder $query) {
+                    $query->where('conference_id', $this->conference);
+                })
+                ->orWhereHas('away', function (Builder $query) {
+                    $query->where('conference_id', $this->conference);
+                });
+            });
+        }
 
-        $live = $live->orderBy('status_id', 'ASC')->get();
+        $live = $live->orderBy('game_time', 'ASC')->get();
 
         $other = Game::where('game_date', $this->date)
             ->whereIn('status_id', [1, 3]);
 
-        // if ($this->conference) {
-        //     $other->whereHas('home', function (Builder $query) {
-        //         $query->where('conference_id', $this->conference);
-        //     })
-        //     ->orWhereHas('away', function (Builder $query) {
-        //         $query->where('conference_id', $this->conference);
-        //     });
-        // }
+        if ($this->conference) {
+            $other->where(function(Builder $builder) {
+                $builder->whereHas('home', function (Builder $query) {
+                    $query->where('conference_id', $this->conference);
+                })
+                ->orWhereHas('away', function (Builder $query) {
+                    $query->where('conference_id', $this->conference);
+                });
+            });
+        }
 
-        $other = $other->orderBy('status_id', 'ASC')->get();
+        $other = $other->orderBy('game_time', 'ASC')->get();
 
         return $live->merge($other);
     }

@@ -34,7 +34,7 @@
     </div>
 
     <!-- Conference Filter -->
-    {{-- <div class="flex items-center justify-center no-wrap mb-8 overflow-x-auto">
+    <div class="flex items-center justify-center no-wrap mb-8 overflow-x-auto">
 
         <flux:button.group>
             @foreach ($this->conferences as $conf)
@@ -50,7 +50,7 @@
             @endforeach
         </flux:button.group>
 
-    </div> --}}
+    </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
 
