@@ -50,7 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function favorites()
     {
-        return Team::whereIn('id', $this->teams)->orderBy('location')->get();
+        return $this->teams ? Team::whereIn('id', $this->teams)->orderBy('location')->get() : null;
     }
 
     /**
