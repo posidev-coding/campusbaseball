@@ -2,19 +2,19 @@
 
 namespace App\Livewire\Feeds;
 
-use App\Jobs\Feeds\NCAAGames;
-use App\Jobs\Feeds\SyncCalendar;
-use App\Jobs\Feeds\SyncGames;
-use App\Jobs\Feeds\SyncGroups;
-use App\Jobs\Feeds\SyncNews;
-use App\Jobs\Feeds\SyncRankings;
-use App\Jobs\Feeds\SyncTeams;
 use Flux\Flux;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\DB;
-use Livewire\Attributes\Title;
 use Livewire\Component;
+use App\Jobs\Feeds\NCAAGames;
+use App\Jobs\Feeds\SyncGames;
+use App\Jobs\Feeds\SyncTeams;
+use App\Jobs\Feeds\SyncGroups;
+use Livewire\Attributes\Title;
+use App\Jobs\Feeds\SyncArticles;
+use App\Jobs\Feeds\SyncCalendar;
+use App\Jobs\Feeds\SyncRankings;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Artisan;
 
 #[Title('Feeds')]
 class Feeds extends Component
@@ -65,7 +65,7 @@ class Feeds extends Component
                 SyncRankings::dispatch();
                 break;
             case 'Articles':
-                $batch = Bus::batch([new SyncNews])
+                $batch = Bus::batch([new SyncArticles])
                     ->name('Articles')
                     ->dispatch();
                 break;
