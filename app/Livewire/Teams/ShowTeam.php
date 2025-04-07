@@ -19,9 +19,12 @@ class ShowTeam extends Component
 
     public string $tab;
 
+    public $articles;
+
     public function mount(Team $team)
     {
         $this->team = $team;
+        $this->articles = $team->articles();
         $this->route = Route::getCurrentRequest()->getRequestUri();
         $this->following = in_array($this->team->id, auth()->user()->teams ?? []);
 

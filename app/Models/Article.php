@@ -11,7 +11,9 @@ class Article extends Model
 
     protected $casts = [
         'published' => 'datetime',
-        'teams' => 'array'
+        'teams' => 'array',
+        'story_images' => 'array',
+        'story_videos' => 'array'
     ];
 
 }

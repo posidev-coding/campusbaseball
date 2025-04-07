@@ -69,7 +69,9 @@
             <flux:tab name="stats">Stats</flux:tab>
         </flux:tabs>
 
-        <flux:tab.panel name="schedule">Schedule...</flux:tab.panel>
+        <flux:tab.panel name="schedule">
+
+
         <flux:tab.panel name="roster">Roster...</flux:tab.panel>
         <flux:tab.panel name="stats">Stats...</flux:tab.panel>
     </flux:tab.group>

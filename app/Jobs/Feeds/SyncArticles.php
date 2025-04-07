@@ -163,6 +163,21 @@ class SyncArticles implements ShouldQueue, ShouldBeUnique
 
             $teams = array_unique($teams);
 
+            $storyImages = [];
+            $storyVideos = [];
+
+            if($articleType == 'Story' && isset($article['images'])) {
+                foreach($article['images'] as $ai) {
+                    array_push($storyImages, $ai['url']);
+                }
+            }
+
+            if($articleType == 'Story' && isset($article['video'])) {
+                foreach($article['video'] as $av) {
+                    array_push($storyVideos, $av['id']);
+                }
+            }
+
             $transaction = Article::updateOrCreate(
                 [
                     'id' => $article['id']
@@ -176,6 +191,8 @@ class SyncArticles implements ShouldQueue, ShouldBeUnique
                     'headline' => $article['headline'] ?? null,
                     'description' => $article['description'] ?? null,
                     'story' => $article['story'] ?? null,
+                    'story_images' => $storyImages,
+                    'story_videos' => $storyVideos,
                     'published' => $published_date
                 ]
             );

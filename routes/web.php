@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Conferences\ShowConference as Conference;
+use App\Livewire\Articles\ShowArticle as Article;
 use App\Livewire\Conferences\ViewConferences as Standings;
 use App\Livewire\Feeds\Feeds;
 use App\Livewire\Games\ShowGame as Game;
@@ -18,6 +19,8 @@ Route::get('/scores/{game}', Game::class)->name('game');
 
 Route::get('/teams', Teams::class)->name('teams');
 Route::get('/teams/{team}', Team::class)->name('team');
+
+Route::get('/articles/{article}', Article::class)->name('article');
 
 Route::get('/standings', Standings::class)->name('standings');
 Route::get('/standings/{conference}', Conference::class)->name('conference');

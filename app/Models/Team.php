@@ -14,6 +14,11 @@ class Team extends Model
         'logos' => 'array',
     ];
 
+    public function articles()
+    {
+        return Article::whereJsonContains('teams', $this->id)->orderBy('published', 'desc')->get();
+    }
+
     public function record()
     {
         return $this->hasOne(Record::class)->where('scope', 'overall');

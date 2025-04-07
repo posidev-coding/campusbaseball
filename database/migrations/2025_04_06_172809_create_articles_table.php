@@ -24,6 +24,8 @@ class CreateArticlesTable extends Migration
             $table->text('description')->nullable();
             $table->longText('story')->nullable();
             $table->json('teams')->nullable();
+            $table->json('story_images')->nullable();
+            $table->json('story_videos')->nullable();
             $table->timestamp('published', 0);
             $table->timestamps();
         });
