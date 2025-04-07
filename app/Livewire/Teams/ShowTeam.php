@@ -2,10 +2,12 @@
 
 namespace App\Livewire\Teams;
 
+use App\Models\Game;
 use App\Models\Team;
 use App\Models\Ranking;
 use Livewire\Component;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Database\Eloquent\Builder;
 
 class ShowTeam extends Component
 {
@@ -45,6 +47,23 @@ class ShowTeam extends Component
         return view('livewire.teams.show-team')->title($this->team->location.' '.$this->team->name)->layoutData([
             'icon' => $this->team->logo ?? null,
         ]);
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function games()
+    {
+
+        $games = Game::where('game_date', '<=', today())
+            ->where('status_id', '!=', 1);
+
+        $games->where(function(Builder $query) {
+            $query->where('away_id', $this->team->id)
+                    ->orWhere('home_id', $this->team->id);
+        });
+
+        $games = $games->orderBy('game_time', 'desc')->get();
+
+        return $games;
     }
 
     public function toggle()
