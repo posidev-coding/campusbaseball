@@ -27,8 +27,6 @@ class SyncPlays implements ShouldQueue, ShouldBeUnique
 
     private int $playCount;
 
-    private bool $finalize;
-
     /**
      * Get the unique ID for the job.
     */
@@ -37,10 +35,9 @@ class SyncPlays implements ShouldQueue, ShouldBeUnique
         return $this->game->id;
     }
 
-    public function __construct(int $game, $all = false, $finalize = false)
+    public function __construct(int $game, $all = false)
     {
         $this->game = Game::find($game);
-        $this->finalize = $finalize;
         $this->pageCursor = $all ? 1 : ($this->game->play_page ?? 1);
         $this->playCursor = $this->game->play_cursor ?? 0;
         $this->playCount = 0;
@@ -61,10 +58,6 @@ class SyncPlays implements ShouldQueue, ShouldBeUnique
             }
         }
 
-        if($this->finalize) {
-            $this->game->finalized = true;
-            $this->game->save();
-        }
     }
 
     public function extractId($url, $prefix): int
