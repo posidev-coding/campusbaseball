@@ -79,20 +79,88 @@
 
     <flux:tab.group>
         <flux:tabs wire:model="tab">
+            <flux:tab name="home">Home</flux:tab>
             <flux:tab name="schedule">Schedule</flux:tab>
             <flux:tab name="roster">Roster</flux:tab>
             <flux:tab name="stats">Stats</flux:tab>
         </flux:tabs>
 
-        <flux:tab.panel name="schedule">
+        <flux:tab.panel name="home">
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
 
-                <div class="flex flex-col space-y-2 col-span-1">
-                    @foreach ($this->games as $game)
+                <div class="flex flex-col bg-card border dark:border-muted rounded-lg lg:mx-4 max-w-4xl grow hover:border-gray-400">
+                    
+                    <flux:table>
+    
+                        <flux:table.columns class="bg-card-header">
+                            <flux:table.column><p class="pl-4 md:pl-6">{{ config('espn.year') . ' Results' }}</p></flux:table.column>
+                            <flux:table.column></flux:table.column>
+                        </flux:table.columns>
+    
+                        <flux:table.rows class="bg-card">
+    
+                            @foreach ($this->games as $game)
+                                <flux:table.row>
+                                    <flux:table.cell>
+                                        <div class="flex items-center pl-4 md:pl-6 space-x-1">
+                                            <div class="flex text-muted font-extralight text-xs w-8">
+                                                {{ $game->game_date->format('n/j') }}
+                                            </div>
+                                            <div class="flex">
+                                                {{ $game->away_id == $team->id ? '@' : 'vs' }}
+                                            </div>
+                                            <div class="flex">
+                                                <x-game.team-logo :team="$game->away_id == $team->id ? $game->home : $game->away" size="5" />
+                                            </div>
+                                            @if($game->away_id == $team->id && isset($game->home_rank) && $game->home_rank > 0)
+                                                <div class="flex text-muted font-light text-xs">
+                                                    {{ $game->home_rank }}
+                                                </div>
+                                            @endif
+                                            @if($game->home_id == $team->id && isset($game->away_rank) && $game->away_rank > 0)
+                                                <div class="flex text-muted font-light text-xs">
+                                                    {{ $game->away_rank }}
+                                                </div>
+                                            @endif
+                                            <div class="flex">
+                                                {{ $game->away_id == $team->id ? $game->home->location : $game->away->location }}
+                                            </div>
+                                        </div>
+                                    </flux:table.cell>
+                                    <flux:table.cell align="end">
+                                        <div class="flex items-center justify-end pr-4 md:pr-6">
+                                            <div class="flex justify-center w-8 {{ ($game->away_id == $team->id && $game->away_winner || $game->home_id == $team->id && $game->home_winner) ? 'text-green-600' : 'text-red-600' }}">
+                                                {{ ($game->away_id == $team->id && $game->away_winner || $game->home_id == $team->id && $game->home_winner) ? 'W' : 'L' }}
+                                            </div>
+                                            <div class="flex justify-center w-12">
+                                                {{ $game->away_winner ? ($game->away_runs . ' - ' . $game->home_runs) : ($game->home_runs . ' - ' . $game->away_runs) }}
+                                            </div>
+                                        </div>
+                                    </flux:table.cell>
+                                </flux:table.row>
+                            @endforeach
+
+                        </flux:table.rows>
+
+                    </flux:table>
+
+                </div>
+
+                <div class="flex flex-col space-y-2 col-span-1 xl:col-span-2">
+                    <flux:heading>Upcoming Games</flux:heading>
+                    @foreach ($this->upcoming as $game)
                         <x-games.card :game="$game" />
                     @endforeach
                 </div>
         
+            </div>
+        </flux:tab.panel>
+        <flux:tab.panel name="schedule">
+            <div class="flex flex-col space-y-2 col-span-1 xl:col-span-2">
+                <flux:heading>Full Schedule</flux:heading>
+                @foreach ($this->schedule as $game)
+                    <x-games.card :game="$game" />
+                @endforeach
             </div>
         </flux:tab.panel>
         <flux:tab.panel name="roster">Roster...</flux:tab.panel>

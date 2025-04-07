@@ -30,7 +30,7 @@ class ShowTeam extends Component
         $this->route = Route::getCurrentRequest()->getRequestUri();
         $this->following = in_array($this->team->id, auth()->user()->teams ?? []);
 
-        $this->tab = 'schedule';
+        $this->tab = 'home';
 
         $week = Ranking::where('season_id', config('espn.year'))->max('week_nbr');
 
@@ -62,6 +62,35 @@ class ShowTeam extends Component
         });
 
         $games = $games->orderBy('game_time', 'desc')->get();
+
+        return $games;
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function upcoming()
+    {
+
+        $games = Game::where('game_date', '>=', today())
+            ->where('status_id', '!=', 3);
+
+        $games->where(function(Builder $query) {
+            $query->where('away_id', $this->team->id)
+                    ->orWhere('home_id', $this->team->id);
+        });
+
+        $games = $games->orderBy('game_time', 'asc')->get();
+
+        return $games;
+    }
+
+    #[\Livewire\Attributes\Computed]
+    public function schedule()
+    {
+
+        $games = Game::where('away_id', $this->team->id)
+                    ->orWhere('home_id', $this->team->id)
+                    ->orderBy('game_time', 'asc')
+                    ->get();
 
         return $games;
     }
