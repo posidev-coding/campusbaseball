@@ -29,6 +29,7 @@
     
     --color-accent: var(--color-blue-500);    
     --color-accent-content: var(--color-blue-600);    
+    --color-accent-light: var(--color-sky-500);
     --color-accent-foreground: var(--color-white);
 
     --color-body: var(--color-white);
@@ -59,10 +60,11 @@
     .dark {
         
         --color-accent: var(--color-blue-500);        
-        --color-accent-content: var(--color-blue-400);        
+        --color-accent-content: var(--color-blue-400);
+        --color-accent-light: var(--color-blue-400);
         --color-accent-foreground: var(--color-white);
 
-        --color-body: var(--color-slate-800);
+        --color-body: --alpha(var(--color-slate-800) / 90%);
 
         --color-live: var(--color-yellow-400);
 
@@ -72,7 +74,7 @@
         --color-out: var(--color-red-700);
         --color-not-out: var(--color-muted);
 
-        --color-card: var(--color-dark);
+        --color-card: var(--color-darker);
         --color-card-header: --alpha(var(--color-slate-700) / 50%);
 
     }

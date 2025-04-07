@@ -6,6 +6,7 @@ use App\Livewire\Conferences\ViewConferences as Standings;
 use App\Livewire\Feeds\Feeds;
 use App\Livewire\Games\ShowGame as Game;
 use App\Livewire\Games\ViewGames as Scores;
+use App\Livewire\Stats\ViewStats as Stats;
 use App\Livewire\Rankings\ViewRankings as Rankings;
 use App\Livewire\Teams\ShowTeam as Team;
 use App\Livewire\Teams\ViewTeams as Teams;
@@ -24,6 +25,8 @@ Route::get('/articles/{article}', Article::class)->name('article');
 
 Route::get('/standings', Standings::class)->name('standings');
 Route::get('/standings/{conference}', Conference::class)->name('conference');
+
+Route::get('/stats', Stats::class)->name('stats');
 
 Route::get('/rankings', Rankings::class)->name('rankings');
 
