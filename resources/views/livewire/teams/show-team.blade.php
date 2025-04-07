@@ -31,7 +31,7 @@
             <div class="flex flex-col items-start">
 
                 <div class="flex text-base md:text-xl lg:text-2xl">
-                    @if ($rank > 0)
+                    @if($rank > 0)
                         <span class="lg:font-medium text-gray-500 dark:text-slate-300 font-normal mr-1.5">{{ $rank }}</span>
                     @endif
 
@@ -40,8 +40,9 @@
                             <span class="flex font-normal lg:font-semibold lg:tracking-wide">{{ $team->location . ' ' . $team->name }}</span>
                             {{-- <span class="flex md:hidden font-normal">{{ $team->abbreviation }}</span> --}}
                         </p>
-                                    <!-- Home record -->
-                        @if (isset($team->record))
+                        
+                        <!-- Record -->
+                        @if(isset($team->record))
                             <div class="flex items-center font-light md:font-normal text-[12px] sm:text-[13px] md:text-sm space-x-1 text-gray-500 dark:text-slate-300 p-0">
                                 <div class="flex">{{ $team->record->summary }}</div>
                             </div>
@@ -69,9 +70,7 @@
             <flux:tab name="stats">Stats</flux:tab>
         </flux:tabs>
 
-        <flux:tab.panel name="schedule">
-
-
+        <flux:tab.panel name="schedule">Schedule...</flux:tab.panel>
         <flux:tab.panel name="roster">Roster...</flux:tab.panel>
         <flux:tab.panel name="stats">Stats...</flux:tab.panel>
     </flux:tab.group>
