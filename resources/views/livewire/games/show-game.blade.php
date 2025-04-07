@@ -126,7 +126,7 @@
                         </span>
                     </a>
                 @else
-                    <a href="{{ route('team', $game->home_id) }}" class="pl-3 md:pl-6 shrink-0 cursor-pointer">
+                    <a href="{{ route('team', $game->home_id) }}" class="pr-3 md:pr-6 shrink-0 cursor-pointer">
                         <span class="flex sm:hidden">
                             <x-game.team-logo :team="$game->home" size="8" />
                         </span>
