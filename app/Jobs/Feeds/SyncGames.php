@@ -84,13 +84,16 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
             }
         }
 
-        if ($this->batch() && ! $this->batch()->cancelled()) {
-            $this->batch()->add($jobs);
-        } else {
-            Bus::batch($jobs)
-                ->name('Games '.$this->date)
-                ->dispatch();
+        if(count($jobs) > 0) {
+            if ($this->batch() && ! $this->batch()->cancelled()) {
+                $this->batch()->add($jobs);
+            } else {
+                Bus::batch($jobs)
+                    ->name('Games '.$this->date)
+                    ->dispatch();
+            }
         }
+
     }
 
     public function getDates()
