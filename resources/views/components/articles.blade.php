@@ -9,9 +9,9 @@
         {{-- @foreach ($stories as $story) --}}
   
         <div class="flex flex-col prose max-w-3xl">
-            <h2>{{ $article->headline }}</h2>
+            <h2 class="dark:text-light">{{ $article->headline }}</h2>
             <p class="text-muted text-sm">{{ \Carbon\Carbon::parse($article->published)->shiftTimeZone('UTC')->setTimeZone('America/New_York')->format('F jS, Y') }}</p>
-            {!! $article->story !!}
+            <div class="dark:text-light">{!! $article->story !!}</div>
         </div>
   
         {{-- @endforeach --}}
@@ -35,7 +35,7 @@
                 </div>
                 <div class="flex-1 p-2 flex flex-col justify-between">
                     <div class="flex-1">
-                        <p class="text-base font-semibold text-gray-900">
+                        <p class="text-base font-semibold text-gray-900 dark:text-light">
                             {{ $highlight->headline }}
                         </p>
                         {{-- <p class="mt-2 text-sm text-gray-500">
