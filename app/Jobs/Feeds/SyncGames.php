@@ -65,7 +65,7 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
                 $query->where('status_id', 2)->where('finalized', 0);
             })->orWhere(function (Builder $query) {
                 // Or current date and game_time in past
-                $query->where('game_date', today())->where('game_time', '<=', now());
+                $query->where('game_date', today())->where('game_time', '<=', now())->where('finalized', 0);
             })->get();
 
             foreach ($games as $game) {
