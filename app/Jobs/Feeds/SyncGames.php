@@ -8,6 +8,7 @@ use App\Models\Calendar;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Batchable;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Queue\Queueable;
@@ -26,6 +27,8 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
 
     private string $mode;
 
+    private string $jobName;
+
     private $presets = [
         'today', // live
         'tomorrow', // full
@@ -43,9 +46,10 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
          return $this->date . '.' . $this->mode;
      }
 
-    public function __construct($date = 'today')
+    public function __construct($date = 'today', $jobName = null)
     {
         $this->date = $date;
+        $this->jobName = $jobName ?? 'Games ' . $this->date;
         $this->mode = in_array($date, ['full', 'past', 'yesterday']) ? 'final' : (in_array($date, ['tomorrow', 'future']) ? 'full' : 'live');
     }
 
@@ -55,6 +59,8 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
         if ($this->batch() && $this->batch()->cancelled()) {
             return;
         }
+
+        Log::info('Syncing games: ' . $this->jobName);
 
         $jobs = [];
 
@@ -89,7 +95,7 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
                 $this->batch()->add($jobs);
             } else {
                 Bus::batch($jobs)
-                    ->name('Games '.$this->date)
+                    ->name($this->jobName)
                     ->dispatch();
             }
         }

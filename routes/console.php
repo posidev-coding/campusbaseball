@@ -8,7 +8,7 @@ use App\Jobs\Feeds\SyncRankings;
 use Illuminate\Support\Facades\Schedule;
 
 // Game Syncing
-Schedule::job(new SyncGames('today'))->everyFiveMinutes();
+Schedule::job(new SyncGames('today', 'Games Today (5 minute)'))->everyFiveMinutes();
 // Schedule::job(new SyncGames('today'))->hourly();
 // Schedule::job(new SyncGames('tomorrow'))->everyOddHour();
 // Schedule::job(new SyncGames('yesterday'))->twiceDaily();
