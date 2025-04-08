@@ -8,14 +8,15 @@ use App\Jobs\Feeds\SyncRankings;
 use Illuminate\Support\Facades\Schedule;
 
 // Game Syncing
-Schedule::job(new SyncGames('live', 'Live Games (5m)'))->everyMinute()->between('00:00', '00:05');
-Schedule::job(new SyncGames('today', 'Games Today (hourly)'))->hourly();
-Schedule::job(new SyncGames('tomorrow', 'Games Tomorrow (odd hours)'))->everyOddHour();
-Schedule::job(new SyncGames('yesterday', 'Games Yesterday (2x day)'))->twiceDaily();
+Schedule::job(new SyncGames('live', 'Live Games (5m)'))->everyFiveMinutes()->between('11:00', '23:59');
+Schedule::job(new SyncGames('live', 'Live Games (5m overnight)'))->everyFiveMinutes()->between('00:00', '02:00');
+Schedule::job(new SyncGames('today', 'Games Today (hourly)'))->hourly(5)->between('11:00', '23:59');
+Schedule::job(new SyncGames('tomorrow', 'Games Tomorrow (odd hours)'))->everyOddHour(15)->between('11:00', '23:59');
+Schedule::job(new SyncGames('yesterday', 'Games Yesterday (2x day)'))->twiceDaily(3, 15);
 Schedule::job(new SyncGames('future', 'Future Games (6am daily)'))->dailyAt(6);
 
 // Conferences, Teams, Articles & Rankings
-Schedule::job(new SyncGroups())->everyTwoHours();
-Schedule::job(new SyncTeams())->dailyAt(5);
-Schedule::job(new SyncArticles())->everyTwoHours(15);
-Schedule::job(new SyncRankings())->everyOddHour()->mondays();
+Schedule::job(new SyncGroups())->everyTwoHours(10)->between('6:00', '23:59');
+Schedule::job(new SyncTeams())->dailyAt(4);
+Schedule::job(new SyncArticles())->everyTwoHours(30)->between('6:00', '23:59');
+Schedule::job(new SyncRankings())->everyOddHour(45)->mondays()->between('4:00', '23:59');
