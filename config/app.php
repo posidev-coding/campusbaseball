@@ -66,7 +66,7 @@ return [
     */
 
     'timezone' => 'America/New_York',
-
+    'schedule_timezone' => 'America/New_York',
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

@@ -12,7 +12,7 @@ Schedule::job(new SyncGames('live', 'Live Games (5m)'))->everyFiveMinutes()->unl
 Schedule::job(new SyncGames('today', 'Games Today (hourly)'))->hourly(5)->between('11:00', '23:59');
 Schedule::job(new SyncGames('tomorrow', 'Games Tomorrow (odd hours)'))->everyOddHour(15)->between('11:00', '23:59');
 Schedule::job(new SyncGames('yesterday', 'Games Yesterday (2x day)'))->twiceDaily(3, 15);
-Schedule::job(new SyncGames('future', 'Future Games (6am daily)'))->dailyAt(6);
+Schedule::job(new SyncGames('future', 'Future Games (6am daily)'))->dailyAt('9:15');
 
 // Conferences, Teams, Articles & Rankings
 Schedule::job(new SyncGroups())->everyTwoHours(10)->between('6:00', '23:59');
