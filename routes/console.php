@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Schedule;
 
 // Game Syncing
 Schedule::job(new SyncGames('live'))->everyFiveMinutes();
-Schedule::job(new SyncGames('today'))->hourly();
-Schedule::job(new SyncGames('tomorrow'))->everyOddHour();
-Schedule::job(new SyncGames('yesterday'))->twiceDaily();
-Schedule::job(new SyncGames('future'))->dailyAt(6);
+// Schedule::job(new SyncGames('today'))->hourly();
+// Schedule::job(new SyncGames('tomorrow'))->everyOddHour();
+// Schedule::job(new SyncGames('yesterday'))->twiceDaily();
+// Schedule::job(new SyncGames('future'))->dailyAt(6);
 
 // Conferences, Teams, Articles & Rankings
-Schedule::job(new SyncGroups())->everyTwoHours();
-Schedule::job(new SyncTeams())->dailyAt(5);
-Schedule::job(new SyncArticles())->everyTwoHours(15);
-Schedule::job(new SyncRankings())->everyOddHour()->mondays();
+// Schedule::job(new SyncGroups())->everyTwoHours();
+// Schedule::job(new SyncTeams())->dailyAt(5);
+// Schedule::job(new SyncArticles())->everyTwoHours(15);
+// Schedule::job(new SyncRankings())->everyOddHour()->mondays();
