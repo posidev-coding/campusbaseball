@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Team;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -48,6 +49,13 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public function boot(): void
+    {
+        Gate::define('viewPulse', function (User $user) {
+            return true;
+        });
+    }
+
     public function favorites()
     {
         return $this->teams ? Team::whereIn('id', $this->teams)->orderBy('location')->get() : null;
@@ -60,7 +68,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return Str::of($this->name)
             ->explode(' ')
-            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
+            ->map(fn(string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
 }
