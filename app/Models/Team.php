@@ -26,7 +26,7 @@ class Team extends Model
 
     public function conference()
     {
-        return $this->belongsTo(Conference::class)->where('is_conference', 1);
+        return $this->belongsTo(Conference::class);
     }
 
     public function liveHome()
