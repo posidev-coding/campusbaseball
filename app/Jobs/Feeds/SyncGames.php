@@ -29,6 +29,8 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
 
     private string $jobName;
 
+    private string $batchKey;
+
     private $presets = [
         'today', // live
         'tomorrow', // full
@@ -43,14 +45,16 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
       */
      public function uniqueId(): string
      {
-         return $this->date . '.' . $this->mode;
+         return $this->batchKey;
      }
 
     public function __construct($date = 'today', $jobName = null)
     {
         $this->date = $date;
-        $this->jobName = $jobName ?? 'Games ' . $this->date;
         $this->mode = in_array($date, ['full', 'past', 'yesterday']) ? 'final' : (in_array($date, ['tomorrow', 'future']) ? 'full' : 'live');
+        $this->batchKey = 'Games.' . $this->date . '.' . $this->mode;
+        $this->jobName = $jobName ?? $this->batchKey;
+        Log::info('Queued Games Sync: ' . $this->jobName);
     }
 
     public function handle(): void
@@ -60,7 +64,7 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
             return;
         }
 
-        Log::info('Syncing games: ' . $this->jobName);
+        Log::info('Running Games Sync: ' . $this->jobName);
 
         $jobs = [];
 
@@ -91,6 +95,8 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
             }
         }
 
+
+
         if(count($jobs) > 0) {
             if ($this->batch() && ! $this->batch()->cancelled()) {
                 $this->batch()->add($jobs);
@@ -99,6 +105,9 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
                     ->name($this->jobName)
                     ->dispatch();
             }
+            Log::info($this->jobName . ': Batched out ' . count($jobs) . ' games to sync');
+        } else {
+            Log::info($this->jobName . ': No games to sync..');
         }
 
     }
