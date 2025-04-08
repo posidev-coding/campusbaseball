@@ -77,6 +77,7 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
             foreach ($games as $game) {
                 array_push($jobs, new SyncGame($game->id, $this->mode));
             }
+
         } else {
             // get dates & paginate the api
             $dates = $this->getDates();
