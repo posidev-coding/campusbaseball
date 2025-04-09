@@ -2,15 +2,17 @@
 
 namespace App\Jobs\Feeds;
 
-use App\Models\Record;
 use App\Models\Stat;
 use App\Models\Team;
-use Illuminate\Bus\Batchable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
-use Illuminate\Support\Facades\Http;
+use App\Models\Record;
+use App\Models\NCAATeam;
 use Illuminate\Support\Str;
+use Illuminate\Bus\Batchable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 
 class SyncTeam implements ShouldQueue
 {
@@ -92,7 +94,31 @@ class SyncTeam implements ShouldQueue
             $team->save();
         }
 
+        if(!$team->ncaa_id) {
+            Log::info('Matching team: ' . $team->location);
+            $this->ncaa($team);
+        } else {
+            Log::info('Team already matched: ' . $team->location);
+        }
+
         $this->records();
+    }
+
+    public function ncaa($team)
+    {
+        // Find and associate an NCAA Team ID
+        $ncaa = NCAATeam::where('slug', $team->slug)
+                            ->orWhere('short_name', $team->location)
+                            ->orWhere('short_name', $team->nickname)
+                            ->orWhere('short_name', $team->display_name)
+                            ->orWhere('short_name', $team->short_display_name)
+                            ->get();
+
+        // Associate if found only one match                
+        if(count($ncaa) == 1) {
+            $team->ncaa_id = $ncaa[0]->id;
+            $team->save();
+        };
     }
 
     public function records()

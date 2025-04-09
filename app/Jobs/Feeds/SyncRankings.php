@@ -2,14 +2,24 @@
 
 namespace App\Jobs\Feeds;
 
+use App\Jobs\Feeds\SyncRanking;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 
-class SyncRankings implements ShouldQueue, ShouldBeUnique
+class SyncRankings implements ShouldQueue
 {
     use Queueable;
+
+    public function middleware(): array
+    {
+        return [
+            new SkipIfBatchCancelled,
+            new WithoutOverlapping('sync.rankings')
+        ];
+    }
 
     public function handle(): void
     {

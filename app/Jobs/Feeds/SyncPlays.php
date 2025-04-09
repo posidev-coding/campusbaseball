@@ -9,9 +9,10 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 
-class SyncPlays implements ShouldQueue, ShouldBeUnique
+class SyncPlays implements ShouldQueue
 {
     use Queueable;
 
@@ -27,12 +28,12 @@ class SyncPlays implements ShouldQueue, ShouldBeUnique
 
     private int $playCount;
 
-    /**
-     * Get the unique ID for the job.
-    */
-    public function uniqueId(): string
+    public function middleware(): array
     {
-        return $this->game->id;
+        return [
+            new SkipIfBatchCancelled,
+            new WithoutOverlapping('sync.plays.' . $this->game->id)
+        ];
     }
 
     public function __construct(int $game, $all = false)

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Game;
 use App\Models\Calendar;
 use Illuminate\Support\Str;
+use App\Jobs\Feeds\SyncGame;
 use Illuminate\Bus\Batchable;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
@@ -13,13 +14,12 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 
-class SyncGames implements ShouldQueue, ShouldBeUnique
+class SyncGames implements ShouldQueue
 {
     use Batchable, Queueable;
-
-    const LIMIT = 1000;
 
     private array $events;
 
@@ -40,29 +40,26 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
         'full', // final
     ];
 
-     /**
-      * Get the unique ID for the job.
-      */
-     public function uniqueId(): string
-     {
-         return $this->batchKey;
-     }
-
-    public function __construct($date = 'today', $jobName = null)
+    public function __construct($date = 'today', $scheduleName = null)
     {
         $this->date = $date;
         $this->mode = in_array($date, ['full', 'past', 'yesterday']) ? 'final' : (in_array($date, ['tomorrow', 'future']) ? 'full' : 'live');
         $this->batchKey = 'Games.' . $this->date . '.' . $this->mode;
-        $this->jobName = $jobName ?? $this->batchKey;
+        if($scheduleName) $this->batchKey .= '.scheduled';
+        $this->jobName = $scheduleName ?? $this->batchKey;
         Log::info('Queued Games Sync: ' . $this->jobName);
+    }
+
+    public function middleware(): array
+    {
+        return [
+            new SkipIfBatchCancelled,
+            new WithoutOverlapping($this->batchKey)
+        ];
     }
 
     public function handle(): void
     {
-
-        if ($this->batch() && $this->batch()->cancelled()) {
-            return;
-        }
 
         Log::info('Running Games Sync: ' . $this->jobName);
 
@@ -86,7 +83,7 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
             // get dates & paginate the api
             $dates = $this->getDates();
             foreach ($dates as $date) {
-                $url = config('espn.games').'?dates='.Carbon::parse($date)->format('Ymd').'&limit='.self::LIMIT;
+                $url = config('espn.games').'?dates='.Carbon::parse($date)->format('Ymd').'&limit=1000';
                 $games = Http::get($url)->json()['items'];
                 foreach ($games as $game) {
                     $id = Str::of(Str::chopStart($game['$ref'], config('espn.games').'/'))->explode('?')[0];
@@ -94,8 +91,6 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
                 }
             }
         }
-
-
 
         if(count($jobs) > 0) {
             if ($this->batch() && ! $this->batch()->cancelled()) {
@@ -137,7 +132,6 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
         }
 
         if ($this->date == 'future') {
-            SyncCalendar::dispatchSync();
             $dates = Calendar::where('season_id', config('espn.year'))
                 ->where('calendar_type', 'ondays')
                 ->where('calendar_date', '>=', today('America/New_York'))
@@ -145,7 +139,6 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
         }
 
         if ($this->date == 'past') {
-            SyncCalendar::dispatchSync();
             $dates = Calendar::where('season_id', config('espn.year'))
                 ->where('calendar_type', 'ondays')
                 ->where('calendar_date', '<=', today('America/New_York'))
@@ -153,7 +146,6 @@ class SyncGames implements ShouldQueue, ShouldBeUnique
         }
 
         if ($this->date == 'full') {
-            SyncCalendar::dispatchSync();
             $dates = Calendar::where('season_id', config('espn.year'))
                 ->where('calendar_type', 'ondays')
                 ->pluck('calendar_date');

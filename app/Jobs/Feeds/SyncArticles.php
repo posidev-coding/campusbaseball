@@ -2,8 +2,6 @@
 
 namespace App\Jobs\Feeds;
 
-use Exception;
-
 use Carbon\Carbon;
 use App\Models\Game;
 
@@ -20,9 +18,10 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 
-class SyncArticles implements ShouldQueue, ShouldBeUnique
+class SyncArticles implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -31,21 +30,19 @@ class SyncArticles implements ShouldQueue, ShouldBeUnique
 
     private $team;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
     public function __construct($team = null)
     {
         $this->team = $team;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
+    public function middleware(): array
+    {
+        return [
+            new SkipIfBatchCancelled,
+            new WithoutOverlapping('sync.articles')
+        ];
+    }
+
     public function handle()
     {
 

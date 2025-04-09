@@ -2,22 +2,29 @@
 
 namespace App\Jobs\Feeds;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 
-class SyncGroups implements ShouldQueue, ShouldBeUnique
+class SyncGroups implements ShouldQueue
 {
     use Queueable;
 
-    const LIMIT = 100;
+    public function middleware(): array
+    {
+        return [
+            new SkipIfBatchCancelled,
+            new WithoutOverlapping('sync.groups')
+        ];
+    }
 
     public function handle(): void
     {
 
-        $groups = Http::get(config('espn.groups').'?limit='.self::LIMIT)->json()['items'];
+        $groups = Http::get(config('espn.groups').'?limit=100')->json()['items'];
 
         $jobs = [];
 

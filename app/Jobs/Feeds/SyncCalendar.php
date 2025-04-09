@@ -10,13 +10,22 @@ use Illuminate\Bus\Batchable;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 
-class SyncCalendar implements ShouldQueue, ShouldBeUnique
+class SyncCalendar implements ShouldQueue
 {
     use Batchable, Queueable;
 
     public $tries = 1;
+
+    public function middleware(): array
+    {
+        return [
+            new SkipIfBatchCancelled,
+            new WithoutOverlapping('sync.calendar')
+        ];
+    }
 
     public function handle(): void
     {
