@@ -8,6 +8,7 @@ use App\Livewire\Games\ShowGame as Game;
 use App\Livewire\Games\ViewGames as Scores;
 use App\Livewire\Stats\ViewStats as Stats;
 use App\Livewire\Rankings\ViewRankings as Rankings;
+use App\Livewire\Teams\MatchTeams;
 use App\Livewire\Teams\ShowTeam as Team;
 use App\Livewire\Teams\ViewTeams as Teams;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ Route::get('/scores', Scores::class)->name('scores');
 Route::get('/scores/{game}', Game::class)->name('game');
 
 Route::get('/teams', Teams::class)->name('teams');
+Route::get('/teams/match', MatchTeams::class)->name('match-teams');
 Route::get('/teams/{team}', Team::class)->name('team');
 
 Route::get('/articles/{article}', Article::class)->name('article');

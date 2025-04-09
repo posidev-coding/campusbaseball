@@ -4,7 +4,7 @@ namespace App\Livewire\Feeds;
 
 use Flux\Flux;
 use Livewire\Component;
-use App\Jobs\Feeds\NCAAGames;
+use Livewire\WithPagination;
 use App\Jobs\Feeds\SyncGames;
 use App\Jobs\Feeds\SyncTeams;
 use App\Jobs\Feeds\SyncGroups;
@@ -12,6 +12,7 @@ use Livewire\Attributes\Title;
 use App\Jobs\Feeds\SyncArticles;
 use App\Jobs\Feeds\SyncCalendar;
 use App\Jobs\Feeds\SyncRankings;
+use App\Jobs\Feeds\SyncNCAAGames;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Artisan;
@@ -19,6 +20,9 @@ use Illuminate\Support\Facades\Artisan;
 #[Title('Feeds')]
 class Feeds extends Component
 {
+
+    use WithPagination;
+    
     public $sortBy = 'created_at';
 
     public $sortDirection = 'desc';
@@ -87,7 +91,7 @@ class Feeds extends Component
     {
 
         if($scope == 'ncaa') {
-            NCAAGames::dispatch();
+            SyncNCAAGames::dispatch();
         } else {
             SyncGames::dispatch($scope);
         }

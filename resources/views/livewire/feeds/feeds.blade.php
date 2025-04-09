@@ -27,7 +27,7 @@
                     <flux:menu.item wire:click="games('future')" class="cursor-pointer">All Future</flux:menu.item>
                     <flux:menu.item wire:click="games('past')" class="cursor-pointer">All Past</flux:menu.item>
                     <flux:menu.item wire:click="games('full')" class="cursor-pointer">Full Calendar</flux:menu.item>
-                    <flux:menu.item wire:click="games('ncaa')" class="cursor-pointer">NCAA IDs</flux:menu.item>
+                    <flux:menu.item wire:click="games('ncaa')" class="cursor-pointer">NCAA Games</flux:menu.item>
                     </flux:menu.group>
 
                     <flux:menu.separator />
