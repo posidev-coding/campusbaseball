@@ -50,6 +50,8 @@ class SyncNCAAGames implements ShouldQueue
 
     public function handle(): void
     {
+
+        $validated = VerifyNCAAGames::dispatchSync();
         
         Log::info('Running NCAA Games Sync: ' . $this->jobName);
 
