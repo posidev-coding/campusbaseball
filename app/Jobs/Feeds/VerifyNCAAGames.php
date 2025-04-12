@@ -60,20 +60,31 @@ class VerifyNCAAGames implements ShouldQueue
 
         }
 
+        // Get and purge bad NCAA games
         $games = NCAAGame::whereIn('game_date', $dates)->get();
 
         foreach($games as $game) {
             if(!in_array($game->id, $validIds)) {
                 // game id reassigned or something
-                
+
                 $game->delete();
                 
+                // Clear the game id from any espn games its been assigned to
                 if($match = Game::where('ncaa_id', $game->id)->first()) {
                     $match->ncaa_id = null;
                     $match->save();
                 }
                 
                 Log::info('Deleted NCAA Game: ' . $game->id);
+            }
+        }
+
+        // Now get all ESPN games and verify their NCAA Id is still valid.
+        $games = Game::whereIn('game_date', $dates)->get();
+        foreach($games as $game) {
+            if(!is_null($game->ncaa_id) && !in_array($game->ncaa_id, $validIds)) {
+                $game->ncaa_id = null;
+                $game->save();
             }
         }
 
