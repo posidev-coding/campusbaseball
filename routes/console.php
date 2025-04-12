@@ -7,6 +7,9 @@ use App\Jobs\Feeds\SyncArticles;
 use App\Jobs\Feeds\SyncRankings;
 use Illuminate\Support\Facades\Schedule;
 
+// Purge obsolete batch jobs
+Schedule::command('queue:prune-batches')->daily();
+
 // Game Syncing
 Schedule::job(new SyncGames('live', 'Live Games (5m)'))->everyFiveMinutes()->unlessBetween('02:00', '11:00');
 Schedule::job(new SyncGames('today', 'Games Today (hourly)'))->hourly(5)->between('11:00', '23:59');
