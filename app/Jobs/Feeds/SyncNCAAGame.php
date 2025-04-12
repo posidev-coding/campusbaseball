@@ -8,9 +8,9 @@ use App\Models\NCAAGame;
 use App\Models\NCAATeam;
 use Illuminate\Bus\Batchable;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 
 class SyncNCAAGame implements ShouldQueue
@@ -25,7 +25,7 @@ class SyncNCAAGame implements ShouldQueue
     public function __construct(int $game)
     {
         $this->game = $game;
-        $this->url = config('ncaa.game'). '&variables=' . urlencode('{"id":"' . $this->game . '","week":null,"staticTestEnv":null}');
+        $this->url = config('ncaa.game') . '&variables=' . urlencode('{"id":"' . $this->game . '","week":null,"staticTestEnv":null}');
     }
 
     public function middleware(): array
@@ -38,7 +38,7 @@ class SyncNCAAGame implements ShouldQueue
 
         $data = Http::get($this->url)->json();
 
-        if(isset($data['data']['contests'][0])) {
+        if (isset($data['data']['contests'][0])) {
 
             $game = $data['data']['contests'][0];
 
@@ -89,21 +89,41 @@ class SyncNCAAGame implements ShouldQueue
                 ]
             );
 
+            $this->espn($ncaa);
+        }
+    }
+
+    // Find and assign NCAA IDs to ESPN games
+    public function espn($ncaa)
+    {
+
+        $exact = Game::where('game_date', $ncaa['game_date'])
+            ->where(function (Builder $builder) use ($ncaa) {
+                $builder->whereHas('home', function (Builder $query) use ($ncaa) {
+                    $query->where('ncaa_id', $ncaa->home_id);
+                })
+                    ->orWhereHas('away', function (Builder $query) use ($ncaa) {
+                        $query->where('ncaa_id', $ncaa->away_id);
+                    });
+            })->get();
+
+        if ($exact && count($exact) == 1) {
+            $espn = $exact[0];
+            $espn->ncaa_id = $ncaa['id'];
+            $espn->save();
+            return;
         }
 
+        $homeMatch = Game::where('game_date', $ncaa['game_date'])
+            ->whereHas('home', function (Builder $query) use ($ncaa) {
+                $query->where('ncaa_id', $ncaa->home_id);
+            })->get();
+
+        if ($homeMatch && count($homeMatch) == 1) {
+            $espn = $homeMatch[0];
+            $espn->ncaa_id = $ncaa['id'];
+            $espn->save();
+            return;
+        }
     }
-    
-    /*
-    $matches = Game::where('game_date', $date)
-                ->where(function(Builder $query) use($away_team, $home_team){
-                    $query->whereHas('home', function(Builder $q) use($home_team) {
-                        $q->where('location', 'like', "%{$home_team}%")
-                            ->orWhere('nickname', 'like', "%{$home_team}%");
-                    })->orWhereHas('away', function(Builder $q) use($away_team) {
-                        $q->where('location', 'like', "%{$away_team}%")
-                            ->orWhere('nickname', 'like', "%{$away_team}%");
-                    });
-                })
-                ->get();
-                */
 }

@@ -18,7 +18,7 @@ class GameController extends Controller
         $data = Http::get(config('espn.games').'/'.$gameId)->json();
 
         // Instantiate a working model
-        $game = self::game($gameId, $data); // 0 callouts
+        $game = self::game($gameId, $data);
         $game = self::status($game, $data);
         $game = self::scores($game, $data);
 
@@ -59,10 +59,11 @@ class GameController extends Controller
     public static function store($game)
     {
 
-        $model = Game::find($game->id);
+        $model = Game::find($game->id)->withoutRelations();
         $game_time = $game->game_time->shiftTimezone('UTC')->setTimezone('America/New_York');
 
         $attributes = $game->toArray();
+
         $attributes['game_time'] = $game_time;
         $attributes['game_date'] = $game_time;
 
@@ -147,7 +148,7 @@ class GameController extends Controller
             'watch_espn' => $comp['onWatchESPN']
         ]);
 
-        return $game;
+        return self::store($game);
     }
 
     public static function status(Game $game, mixed $data): Game
@@ -211,6 +212,45 @@ class GameController extends Controller
 
         $game->away_box = isset($away_team['linescores']) ? self::box($away_team['linescores']['$ref'].'&limit=100') : [];
         $game->home_box = isset($home_team['linescores']) ? self::box($home_team['linescores']['$ref'].'&limit=100') : [];
+
+        
+        if(empty($game->away_box) && isset($game->ncaa_id)) {
+            
+            // Fetch game from NCAA and try to fill
+            $ncaaUrl = config('ncaa.game') . '&variables=' . urlencode('{"id":"' . $game->ncaa_id . '","week":null,"staticTestEnv":null}');
+            
+            $data = Http::get($ncaaUrl)->json();
+            
+            if (isset($data['data']['contests'][0]['linescores']) && count($data['data']['contests'][0]['linescores']) > 0) {
+                
+                $lines = $data['data']['contests'][0]['linescores'];
+                $abox = [];
+                $hbox = [];
+                
+                foreach($lines as $line) {
+                    
+                    if(intval($line['period']) > 0) {
+                        array_push($abox, [
+                            'hits' => 0,
+                            'errors' => 0,
+                            'inning' => intval($line['period']),
+                            'runs' => intval($line['visit'])
+                        ]);
+                        array_push($hbox, [
+                            'hits' => 0,
+                            'errors' => 0,
+                            'inning' => intval($line['period']),
+                            'runs' => intval($line['home'])
+                        ]);
+                    }
+
+                }
+
+                $game->away_box = $abox;
+                $game->home_box = $hbox;
+
+            }
+        }
 
         return $game;
     }
