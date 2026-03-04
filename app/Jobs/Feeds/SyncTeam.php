@@ -137,7 +137,7 @@ class SyncTeam implements ShouldQueue
 
                 $wins = intval($counts[0]);
                 $losses = intval($counts[1]);
-                $pct = round(($wins / ($wins + $losses)), 3);
+                $pct = ($wins + $losses) > 0 ? round(($wins / ($wins + $losses)), 3) : 0;
 
                 $record = Record::updateOrCreate(
                     [
