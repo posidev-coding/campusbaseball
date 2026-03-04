@@ -53,7 +53,8 @@ class ShowTeam extends Component
     public function games()
     {
 
-        $games = Game::where('game_date', '<=', today())
+        $games = Game::where('season_id', config('espn.year'))
+            ->where('game_date', '<=', today())
             ->where('status_id', '!=', 1);
 
         $games->where(function(Builder $query) {
