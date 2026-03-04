@@ -11,7 +11,11 @@
             'text-black dark:text-slate-300' => in_array($game->status_id, [1, 3]),
             'text-live' => !in_array($game->status_id, [1, 3]),
         ])>
-            {{ $game->status['type']['shortDetail'] }}
+            @isset($game->status['type']['shortDetail'])
+                {{ $game->status['type']['shortDetail'] }}
+            @else
+                {{ $game->id }}
+            @endisset
         </div>
         @if ($game->status_id > 1)
             <div class="flex">
