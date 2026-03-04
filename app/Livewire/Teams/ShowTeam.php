@@ -90,8 +90,9 @@ class ShowTeam extends Component
     {
 
         $games = Game::where('season_id', config('espn.year'))
-                    ->where('away_id', $this->team->id)
-                    ->orWhere('home_id', $this->team->id)
+                    ->where(function (Builder $query) {
+                        $query->where('away_id', $this->team->id)->orWhere('home_id', $this->team->id);
+                      })
                     ->orderBy('game_time', 'asc')
                     ->get();
 
