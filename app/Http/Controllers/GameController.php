@@ -91,6 +91,14 @@ class GameController extends Controller
         $away_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][0] : $comp['competitors'][1];
         $home_team = $comp['competitors'][0]['homeAway'] == 'away' ? $comp['competitors'][1] : $comp['competitors'][0];
 
+        if(!isset($data['shortName'])) {
+            $awayAbbr = Team::where('id', $away_team['id'])->exists() ? Team::find($away_team['id'])->abbreviation : 'Unk';
+            $homeAbbr = Team::where('id', $home_team['id'])->exists() ? Team::find($home_team['id'])->abbreviation : 'Unk';
+            $short = $awayAbbr . ' @ ' . $homeAbbr;
+        } else {
+            $short = $data['shortName'];
+        }
+        
         $venue = $comp['venue'] ?? null;
         if ($venue) {
             unset($venue['$ref']);
@@ -130,7 +138,7 @@ class GameController extends Controller
             'game_date' => $localDate->toDateString(),
             'game_time' => $localDate,
             'name' => $data['name'] ?? null,
-            'short_name' => $data['shortName'] ?? null,
+            'short_name' => $short,
             'season_id' => $season,
             'season_type_id' => $season_type,
             'away_id' => $away_team['id'],
