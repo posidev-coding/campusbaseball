@@ -71,7 +71,8 @@ class ShowTeam extends Component
     public function upcoming()
     {
 
-        $games = Game::where('game_date', '>=', today())
+        $games = Game::where('season_id', config('espn.year'))
+            ->where('game_date', '>=', today())
             ->where('status_id', '!=', 3);
 
         $games->where(function(Builder $query) {
@@ -88,7 +89,8 @@ class ShowTeam extends Component
     public function schedule()
     {
 
-        $games = Game::where('away_id', $this->team->id)
+        $games = Game::where('season_id', config('espn.year'))
+                    ->where('away_id', $this->team->id)
                     ->orWhere('home_id', $this->team->id)
                     ->orderBy('game_time', 'asc')
                     ->get();
