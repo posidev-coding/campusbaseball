@@ -101,6 +101,6 @@ return [
     |
     */
 
-    'prefix' => 'cache_',
+    'prefix' => 'cb_cache_',
 
 ];
