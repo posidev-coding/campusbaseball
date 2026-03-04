@@ -37,9 +37,10 @@ class SyncArticles implements ShouldQueue
 
     public function middleware(): array
     {
+        $jobKey = $this->team ? "sync.articles.team.{$this->team}" : "sync.articles";
         return [
             new SkipIfBatchCancelled,
-            new WithoutOverlapping('sync.articles')
+            new WithoutOverlapping($jobKey),
         ];
     }
 
