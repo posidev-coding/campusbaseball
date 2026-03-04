@@ -59,7 +59,7 @@ class GameController extends Controller
     public static function store($game)
     {
 
-        $model = Game::find($game->id)->withoutRelations();
+        $model = Game::where('id', $game->id)->exists() ? Game::find($game->id)->withoutRelations() : null;
         $game_time = $game->game_time->shiftTimezone('UTC')->setTimezone('America/New_York');
 
         $attributes = $game->toArray();
