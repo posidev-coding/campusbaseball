@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('conference_id');
             $table->unsignedMediumInteger('team_id');
             $table->unsignedTinyInteger('ranking');
-            $table->string('record', 5)->nullable();
+            $table->string('record', 8)->nullable();
             $table->json('stats')->nullable();
             $table->timestamps();
             $table->unique(['conference_id','team_id']);
