@@ -8,6 +8,7 @@ use App\Models\Game;
 use App\Models\Team;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class GameController extends Controller
@@ -81,6 +82,10 @@ class GameController extends Controller
     {
 
         $seasons = config('espn.seasons').'/';
+
+        if(!isset($data['season'])) {
+            Log::error('No season set for game: ', $data);
+        }
 
         $season = Str::of(Str::chopStart($data['season']['$ref'], $seasons))->take(4);
 
