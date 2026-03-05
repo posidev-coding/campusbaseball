@@ -18,6 +18,11 @@ class GameController extends Controller
 
         $data = Http::get(config('espn.games').'/'.$gameId)->json();
 
+        if(isset($data['error'])) {
+            Log::error("Error syncing game {$gameId}", $data['error']);
+            return new Game();
+        }
+
         // Instantiate a working model
         $game = self::game($gameId, $data);
         $game = self::status($game, $data);
@@ -82,10 +87,6 @@ class GameController extends Controller
     {
 
         $seasons = config('espn.seasons').'/';
-
-        if(!isset($data['season'])) {
-            Log::error('No season set for game: ', $data);
-        }
 
         $season = Str::of(Str::chopStart($data['season']['$ref'], $seasons))->take(4);
 
