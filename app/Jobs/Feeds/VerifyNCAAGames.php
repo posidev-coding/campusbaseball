@@ -2,14 +2,15 @@
 
 namespace App\Jobs\Feeds;
 
-use Carbon\Carbon;
 use App\Models\Game;
 use App\Models\NCAAGame;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Foundation\Queue\Queueable;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class VerifyNCAAGames implements ShouldQueue
 {
@@ -19,7 +20,10 @@ class VerifyNCAAGames implements ShouldQueue
 
     public function middleware(): array
     {
-        return [new SkipIfBatchCancelled];
+        return [
+            new SkipIfBatchCancelled,
+            (new WithoutOverlapping('verifyNcaaGames'))->dontRelease(),
+        ];
     }
     
     /**

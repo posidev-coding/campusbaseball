@@ -7,6 +7,7 @@ use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 
 class SyncGame implements ShouldQueue
 {
@@ -26,7 +27,11 @@ class SyncGame implements ShouldQueue
 
     public function middleware(): array
     {
-        return [new SkipIfBatchCancelled];
+        $jobKey = "sync.game.{$this->game}.{$this->scope}";
+        return [
+            new SkipIfBatchCancelled,
+            (new WithoutOverlapping($jobKey))->dontRelease(),
+        ];
     }
 
     public function handle(): void

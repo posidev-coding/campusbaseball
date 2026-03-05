@@ -3,12 +3,12 @@
 namespace App\Jobs\Feeds;
 
 use App\Models\Group;
-use App\Models\Team;
 use App\Models\Standing;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -23,15 +23,22 @@ class SyncGroup implements ShouldQueue
 
     private $cascade;
 
-    public function __construct(string $req, bool $cascade = false)
+    private $group_id;
+
+    public function __construct(int $group, bool $cascade = false)
     {
-        $this->url = Str::isUrl($req) ? $req : config('espn.groups').'/'.$req;
+        $this->group_id = $group;
+        $this->url = config('espn.groups').'/'.$group;
         $this->cascade = $cascade;
     }
 
     public function middleware(): array
     {
-        return [new SkipIfBatchCancelled];
+        $jobKey = $this->cascade ? "sync.group.{$this->group_id}.cascade" : "sync.group.{$this->group_id}";
+        return [
+            new SkipIfBatchCancelled,
+            (new WithoutOverlapping($jobKey))->dontRelease(),
+        ];
     }
 
     public function handle(): void
@@ -65,7 +72,8 @@ class SyncGroup implements ShouldQueue
             $groups = Http::get($data['children']['$ref'])->json()['items'];
 
             foreach ($groups as $group) {
-                array_push($jobs, new SyncGroup($group['$ref'], $this->cascade));
+                $group_id = $this->extractId($group['$ref'], 'groups/');
+                array_push($jobs, new SyncGroup($group_id, $this->cascade));
             }
 
             if ($this->batch() && ! $this->batch()->cancelled()) {
@@ -124,7 +132,7 @@ class SyncGroup implements ShouldQueue
             );
 
             // sync team job
-            SyncTeam::dispatch($team['team']['$ref'], $conf_id);
+            SyncTeam::dispatch($team_id, $conf_id);
 
         }
 

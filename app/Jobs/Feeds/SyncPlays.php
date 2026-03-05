@@ -32,7 +32,7 @@ class SyncPlays implements ShouldQueue
     {
         return [
             new SkipIfBatchCancelled,
-            new WithoutOverlapping('sync.plays.' . $this->game->id)
+            (new WithoutOverlapping("sync.plays.{$this->game->id}"))->dontRelease(),
         ];
     }
 

@@ -44,7 +44,7 @@ class SyncNCAAGames implements ShouldQueue
     {
         return [
             new SkipIfBatchCancelled,
-            new WithoutOverlapping($this->batchKey)
+            (new WithoutOverlapping($this->batchKey))->dontRelease(),
         ];
     }
 

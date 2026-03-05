@@ -2,16 +2,17 @@
 
 namespace App\Jobs\Feeds;
 
-use Carbon\Carbon;
 use App\Models\Game;
 use App\Models\NCAAGame;
 use App\Models\NCAATeam;
+use Carbon\Carbon;
 use Illuminate\Bus\Batchable;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Support\Facades\Http;
 
 class SyncNCAAGame implements ShouldQueue
 {
@@ -30,7 +31,10 @@ class SyncNCAAGame implements ShouldQueue
 
     public function middleware(): array
     {
-        return [new SkipIfBatchCancelled];
+        return [
+            new SkipIfBatchCancelled,
+            (new WithoutOverlapping("sync.nccagame.{$this->game}"))->dontRelease(),
+        ];
     }
 
     public function handle(): void

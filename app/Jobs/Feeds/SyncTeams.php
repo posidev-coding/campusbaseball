@@ -17,7 +17,7 @@ class SyncTeams implements ShouldQueue
     {
         return [
             new SkipIfBatchCancelled,
-            new WithoutOverlapping('sync.teams')
+            (new WithoutOverlapping('sync.teams'))->dontRelease(),
         ];
     }
 

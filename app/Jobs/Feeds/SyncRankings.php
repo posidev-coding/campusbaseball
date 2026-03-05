@@ -17,7 +17,7 @@ class SyncRankings implements ShouldQueue
     {
         return [
             new SkipIfBatchCancelled,
-            new WithoutOverlapping('sync.rankings')
+            (new WithoutOverlapping('sync.rankings'))->dontRelease(),
         ];
     }
 

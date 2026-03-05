@@ -23,7 +23,7 @@ class SyncCalendar implements ShouldQueue
     {
         return [
             new SkipIfBatchCancelled,
-            new WithoutOverlapping('sync.calendar')
+            (new WithoutOverlapping('sync.calendar'))->dontRelease(),
         ];
     }
 

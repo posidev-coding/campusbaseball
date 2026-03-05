@@ -40,7 +40,7 @@ class SyncArticles implements ShouldQueue
         $jobKey = $this->team ? "sync.articles.team.{$this->team}" : "sync.articles";
         return [
             new SkipIfBatchCancelled,
-            new WithoutOverlapping($jobKey),
+            (new WithoutOverlapping($jobKey))->dontRelease(),
         ];
     }
 

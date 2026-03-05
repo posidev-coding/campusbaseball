@@ -2,17 +2,18 @@
 
 namespace App\Jobs\Feeds;
 
+use App\Models\NCAATeam;
+use App\Models\Record;
 use App\Models\Stat;
 use App\Models\Team;
-use App\Models\Record;
-use App\Models\NCAATeam;
-use Illuminate\Support\Str;
 use Illuminate\Bus\Batchable;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class SyncTeam implements ShouldQueue
 {
@@ -26,23 +27,26 @@ class SyncTeam implements ShouldQueue
 
     private $conf_id;
 
-    public function __construct(string $req, $assignToConference = null)
+    public function __construct(int $team, $assignToConference = null)
     {
+        $this->team_id = $team;
         $this->conf_id = $assignToConference;
-        $this->url = Str::isUrl($req) ? $req : config('espn.teams').'/'.$req;
+        $this->url = config('espn.teams').'/'.$team;
     }
 
     public function middleware(): array
     {
-        return [new SkipIfBatchCancelled];
+        $jobKey = $this->conf_id ? "sync.team.{$this->team_id}.{$this->conf_id}" : "sync.team.{$this->team_id}";
+        return [
+            new SkipIfBatchCancelled,
+            (new WithoutOverlapping($jobKey))->dontRelease(),
+        ];
     }
 
     public function handle(): void
     {
 
         $data = Http::get($this->url)->json();
-
-        $this->team_id = $data['id'];
 
         if (isset($data['groups']) && !$this->conf_id) {
             $group = Http::get($data['groups']['$ref'])->json();

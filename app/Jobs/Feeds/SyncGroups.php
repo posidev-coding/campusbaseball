@@ -2,12 +2,13 @@
 
 namespace App\Jobs\Feeds;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
-use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Support\Str;
 
 class SyncGroups implements ShouldQueue
 {
@@ -17,7 +18,7 @@ class SyncGroups implements ShouldQueue
     {
         return [
             new SkipIfBatchCancelled,
-            new WithoutOverlapping('sync.groups')
+            (new WithoutOverlapping('sync.groups'))->dontRelease(),
         ];
     }
 
@@ -29,11 +30,20 @@ class SyncGroups implements ShouldQueue
         $jobs = [];
 
         foreach ($groups as $group) {
-            array_push($jobs, new SyncGroup($group['$ref'], true));
+            $group_id = $this->extractId($group['$ref'], 'groups/');
+            array_push($jobs, new SyncGroup($group_id, true));
         }
 
         $batch = Bus::batch($jobs)
             ->name('Conferences')
             ->dispatch();
+    }
+
+    public function extractId($url, $prefix): int
+    {
+        $path = strstr($url, $prefix);
+        $withoutParams = strstr($path, '?', true);
+
+        return intval(Str::of($withoutParams)->explode('/')[1]);
     }
 }
