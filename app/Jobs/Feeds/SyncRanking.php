@@ -60,7 +60,7 @@ class SyncRanking implements ShouldQueue
             );
 
             $team = Team::findOr($team_id, function () use ($team_id) {
-                SyncTeam::dispatch($team_id);
+                SyncTeam::dispatch(intval($team_id));
             });
 
         }
