@@ -29,4 +29,19 @@
     <x-games.card.team :game="$game" away />
     <x-games.card.team :game="$game" home />
 
+    <div class="px-2.5 pt-1 flex flex-row items-center justify-end gap-x-2">
+        @if($game->watch_espn && !$game->final && !$game->cancelled && !$game->suspended)
+            <flux:badge as="button" color="blue" variant="solid" size="sm">Watch</flux:badge>
+        @endif
+        @if($game->gamecast_available)
+            <flux:badge size="sm">Gamecast</flux:badge>
+        @endif
+        @if($game->boxscore_available)
+            <flux:badge size="sm">Box Score</flux:badge>
+        @endif
+        @if($game->pbp_available)
+            <flux:badge size="sm">Play-By-Play</flux:badge>
+        @endif
+    </div>
+
 </a>

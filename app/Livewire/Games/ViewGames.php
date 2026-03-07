@@ -81,7 +81,7 @@ class ViewGames extends Component
             });
         }
 
-        $live = $live->orderBy('game_time', 'ASC')->get();
+        $live = $live->orderBy('status_id','ASC')->orderBy('game_time', 'ASC')->orderBy('watch_espn', 'DESC')->get();
 
         $other = Game::where('game_date', $this->date)
             ->whereIn('status_id', [1, 3]);
