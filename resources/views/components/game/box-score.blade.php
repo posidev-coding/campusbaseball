@@ -8,7 +8,7 @@
     ])>
         <div class="flex items-stretch w-full">
             <div class="flex flex-col">
-                <div class="bg-card-header flex text-muted text-xs items-center justify-center h-7 border-b dark:border-b-muted rounded-tl-lg">
+                <div class="bg-card-header flex text-red-700 dark:text-blue-400 text-xs items-center justify-center h-7 border-b dark:border-b-muted rounded-tl-lg">
                     @if (!$game->final && isset($game->broadcasts[0]['station']))
                         <span>{{ $game->broadcasts[0]['station'] }}</span>
                     @endif

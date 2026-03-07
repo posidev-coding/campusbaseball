@@ -19,7 +19,7 @@ class ShowGame extends Component
 
     public $runners;
 
-    #[On('echo:game.{game.id},.Plays')]
+    #[On('echo:game.{game.id}.Plays')]
     public function newPlays($event)
     {
         $this->game = GameController::sync($this->game->id, 'live');
