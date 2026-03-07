@@ -36,7 +36,7 @@
             </div>
         @endif
         <div class="flex flex-row items-center justify-end gap-x-2">
-            @if($game->watch_espn && !$game->final && !$game->cancelled && !$game->suspended)
+            @if($game->watch_espn && $game->live)
                 <flux:badge as="button" color="blue" variant="solid" size="sm">Watch</flux:badge>
             @endif
             @if($game->gamecast_available)
