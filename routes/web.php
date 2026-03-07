@@ -14,7 +14,8 @@ use App\Livewire\Teams\ViewTeams as Teams;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-Route::view('/', 'home')->name('home');
+// Route::view('/', 'home')->name('home');
+Route::get('/', Scores::class)->name('home');
 
 Route::get('/scores', Scores::class)->name('scores');
 Route::get('/scores/{game}', Game::class)->name('game');
