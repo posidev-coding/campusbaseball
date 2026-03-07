@@ -2,12 +2,13 @@
 
 namespace App\Jobs\Feeds;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
-use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Support\Str;
 
 class SyncTeams implements ShouldQueue
 {
@@ -29,11 +30,21 @@ class SyncTeams implements ShouldQueue
         $jobs = [];
 
         foreach ($teams as $team) {
-            array_push($jobs, new SyncTeam($team['$ref']));
+            $team_id = $this->extractId($team['$ref'], 'teams/');
+
+            array_push($jobs, new SyncTeam($team_id));
         }
 
         $batch = Bus::batch($jobs)
             ->name('Teams')
             ->dispatch();
+    }
+
+    public function extractId($url, $prefix): int
+    {
+        $path = strstr($url, $prefix);
+        $withoutParams = strstr($path, '?', true);
+
+        return intval(Str::of($withoutParams)->explode('/')[1]);
     }
 }
