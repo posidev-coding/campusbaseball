@@ -1,6 +1,6 @@
-<div wire:init="fetchPlays" class="flex justify-center">
+<div class="flex justify-center">
 
-    <div class="border dark:border-muted rounded-lg mt-2 md:mt-4 lg:mx-4 max-w-4xl grow">
+    <div class="border dark:border-muted rounded-lg mt-2 md:mt-4 lg:mx-4 max-w-4xl">
 
         @if ($plays && count($plays) > 0)
             
@@ -68,8 +68,7 @@
                                         </div>
                                     </div>
                                 </flux:table.cell>
-                                <flux:table.cell class="text-wrap text-xs sm:text-sm">{{ $play['text'] }}
-                                </flux:table.cell>
+                                <flux:table.cell class="text-wrap text-xs sm:text-sm">{{ $play['text'] }}</flux:table.cell>
                                 <flux:table.cell align="end">{{ $play['away_runs'] }}</flux:table.cell>
                                 <flux:table.cell align="end">
                                     <div class="pr-2.5 lg:pr-4">{{ $play['home_runs'] }}</div>

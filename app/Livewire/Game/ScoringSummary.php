@@ -15,7 +15,7 @@ class ScoringSummary extends Component
 
     public $plays;
 
-    #[On('echo:game.{game.id},.Plays')]
+    #[On('echo:game.{game.id}.Plays')]
     public function newPlays($event)
     {
         $this->fetchPlays();
@@ -24,7 +24,7 @@ class ScoringSummary extends Component
         }
     }
 
-    public function fetchPlays()
+    public function mount()
     {
         $this->plays = Play::where('game_id', $this->game->id)
             ->where('scoring_play', 1)
