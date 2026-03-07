@@ -166,11 +166,13 @@
                         <div class="text-xs font-semibold">BATTER</div>
                         <div class="text-sm font-light tracking-wide">{{ $batter['shortName'] }}</div>
                         <div class="text-xs text-gray-400">
-                            @foreach ($batterStats['splits']['categories'] as $stat)
-                                @if ($stat['name'] == 'batting')
-                                    {{ $stat['summary'] }}
-                                @endif
-                            @endforeach
+                            @isset($batterStats['splits']['categories'])
+                                @foreach ($batterStats['splits']['categories'] as $stat)
+                                    @if ($stat['name'] == 'batting')
+                                        {{ $stat['summary'] }}
+                                    @endif
+                                @endforeach
+                            @endisset
                         </div>
                     </div>
                 </div>
