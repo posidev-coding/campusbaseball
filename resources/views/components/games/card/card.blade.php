@@ -13,8 +13,6 @@
         ])>
             @isset($game->status['type']['shortDetail'])
                 {{ $game->status['type']['shortDetail'] }}
-            @else
-                {{ $game->id }}
             @endisset
         </div>
         @if ($game->status_id > 1)
@@ -23,6 +21,10 @@
                 <flux:text class="w-[40px] uppercase text-center text-xs text-black dark:text-slate-300">H</flux:text>
                 <flux:text class="w-[40px] uppercase text-center text-xs text-black dark:text-slate-300">E</flux:text>
             </div>
+        @elseif(isset($game->broadcasts[0]['station']))
+            <div class="flex text-xs text-gray-500">
+                {{ $game->broadcasts[0]['station'] }}
+            </div>
         @endif
     </div>
 
@@ -30,7 +32,7 @@
     <x-games.card.team :game="$game" home />
 
     <div class="px-2.5 pt-1 flex flex-row items-center justify-between gap-x-2">
-        @if(isset($game->broadcasts[0]['station']) && !$game->final && !$game->cancelled && !$game->suspended)
+        @if(isset($game->broadcasts[0]['station']) && !$game->final && !$game->cancelled && !$game->suspended && !$game->status_id == 1)
             <div class="flex text-xs text-gray-500">
                 {{ $game->broadcasts[0]['station'] }}
             </div>
