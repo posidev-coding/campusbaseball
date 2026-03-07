@@ -14,7 +14,7 @@
         <!-- Center on desktop, 1st on mobile -->
         <div class="order-1 md:order-2 w-full md:w-1/2 flex flex-col gap-2.5 lg:gap-4">
             @if ($game->status_id > 1 && isset($game->resources['plays']))
-                <livewire:game.scoring-summary :game="$game" />
+                <livewire:game.gamecast :game="$game" />
             @else
                 <x-skeleton.list />
             @endif

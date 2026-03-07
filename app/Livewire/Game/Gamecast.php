@@ -7,7 +7,7 @@ use App\Models\Play;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class ScoringSummary extends Component
+class Gamecast extends Component
 {
     public Game $game;
 
@@ -36,9 +36,7 @@ class ScoringSummary extends Component
         }
 
         $this->plays = $query->orderBy('id')->get();
-
-        // dd($this->plays);
         
-        return view('livewire.game.scoring-summary');
+        return view('livewire.game.gamecast');
     }
 }

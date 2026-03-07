@@ -40,15 +40,20 @@
         <!-- DESKTOP -->
         <div class="hidden md:flex">
             <flux:table>
-
                 <flux:table.columns class="bg-card-header">
                     <flux:table.column>
                         <div class="pl-2.5 lg:pl-4"></div>
                     </flux:table.column>
-                    <flux:table.column>Scoring Summary</flux:table.column>
-                    <flux:table.column align="end">{{ $game->away->abbreviation }}</flux:table.column>
+                    <flux:table.column>
+                        Scoring Summary
+                    </flux:table.column>
                     <flux:table.column align="end">
-                        <div class="pr-2.5 lg:pr-4">{{ $game->home->abbreviation }}</div>
+                        {{ $game->away->abbreviation }}
+                    </flux:table.column>
+                    <flux:table.column align="end">
+                        <div class="pr-2.5 lg:pr-4">
+                            {{ $game->home->abbreviation }}
+                        </div>
                     </flux:table.column>
                 </flux:table.columns>
 
