@@ -16,13 +16,13 @@
             @if ($game->status_id > 1 && isset($game->resources['plays']))
                 <livewire:game.scoring-summary :game="$game" />
             @elseif($game->status_id == 1)
-                <p>Scheduled...</p>
+                <x-skeleton.list />
             @endif
         </div>
 
         <!-- Right on desktop, 3rd on mobile -->
         <div class="order-3 md:order-3 w-full md:w-1/4 flex flex-col gap-2.5 lg:gap-4 mt-4 lg:mt-0">
-            <!-- components here -->
+            <x-skeleton.list />
         </div>
 
     </div>
