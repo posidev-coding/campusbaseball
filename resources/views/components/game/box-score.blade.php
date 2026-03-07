@@ -142,11 +142,13 @@
                         <div class="text-xs font-semibold">PITCHER</div>
                         <div class="text-sm font-light tracking-wide">{{ $pitcher['shortName'] }}</div>
                         <div class="text-xs text-gray-400">
-                            @foreach ($pitcherStats['splits']['categories'] as $stat)
-                                @if ($stat['name'] == 'pitching')
-                                    {{ $stat['summary'] }}
-                                @endif
-                            @endforeach
+                            @isset($pitcherStats['splits']['categories'])
+                                @foreach ($pitcherStats['splits']['categories'] as $stat)
+                                    @if ($stat['name'] == 'pitching')
+                                        {{ $stat['summary'] }}
+                                    @endif
+                                @endforeach
+                            @endisset
                         </div>
                     </div>
                 </div>
