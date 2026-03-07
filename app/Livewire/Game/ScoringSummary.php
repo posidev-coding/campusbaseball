@@ -15,6 +15,8 @@ class ScoringSummary extends Component
 
     public $plays;
 
+    public $tab = 'scoring';
+
     #[On('echo:game.{game.id}.Plays')]
     public function newPlays($event)
     {
@@ -24,11 +26,19 @@ class ScoringSummary extends Component
         }
     }
 
-    public function mount()
+    public function render()
     {
-        $this->plays = Play::where('game_id', $this->game->id)
-            ->where('scoring_play', 1)
-            ->orderBy('id')
-            ->get();
+
+        $query = Play::where('game_id', $this->game->id);
+
+        if($this->tab == 'scoring') {
+            $query->where('scoring_play', 1);
+        }
+
+        $this->plays = $query->orderBy('id')->get();
+
+        // dd($this->plays);
+        
+        return view('livewire.game.scoring-summary');
     }
 }
