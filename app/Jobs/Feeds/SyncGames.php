@@ -72,7 +72,8 @@ class SyncGames implements ShouldQueue
                 $query->where('status_id', 2)->where('finalized', 0);
             })->orWhere(function (Builder $query) {
                 // Or current date and game_time in past
-                $query->where('game_date', today())->where('game_time', '<=', now())->where('finalized', 0);
+                $now = Carbon::now()->shiftTimezone('UTC')->setTimezone('America/New_York');
+                $query->where('game_date', today())->where('game_time', '<=', $now)->where('finalized', 0);
             })->get();
 
             foreach ($games as $game) {
